@@ -8,3 +8,9 @@ erl_crash.dump
 *.beam
 /config/*.secret.exs
 .elixir_ls/
+
+.history
+.vscode
+build
+tmp
+elixir_jack_compiler
