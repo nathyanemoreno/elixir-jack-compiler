@@ -5,7 +5,7 @@ defmodule ElixirJackCompiler.CLI do
   FLAGS:
 
   --i \t path to JACK input file
-  --o \t path to XML output file
+  --o \t path to XML output file (case empty, default \"build/xml\")
   "
   def main(argv) do
     argv |> parse_args() |> run
@@ -25,6 +25,9 @@ defmodule ElixirJackCompiler.CLI do
       {[i: fileIn, o: fileOut], _, _} ->
         {:start, fileIn, fileOut}
 
+      {[i: fileIn], _, _} ->
+        {:start, fileIn}
+
       _ ->
         :help
     end
@@ -32,6 +35,10 @@ defmodule ElixirJackCompiler.CLI do
 
   defp run({:start, fileIn, fileOut}) do
     Lexer.start(fileIn, fileOut)
+  end
+
+  defp run({:start, fileIn}) do
+    Lexer.start(fileIn)
   end
 
   defp run(:help) do
