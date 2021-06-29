@@ -6,7 +6,7 @@ defmodule Lexer do
     if(File.exists?(fileOut), do: File.rm!(fileOut), else: File.write!(fileOut, ""))
 
     # Call lexer
-    {fileIn, fileOut} |> lexer(0)
+    {fileIn, fileOut} |> lexer()
     # Close files
     File.close(fileIn)
     File.close(fileOut)
@@ -14,19 +14,25 @@ defmodule Lexer do
 
   def start(fileIn) do
     # Verify if the fileIn exists
-    if(!File.exists?(fileIn), do: {:badarg, "File not found."}, else: File.open!(fileIn))
+    if(File.exists?(fileIn)) do
+      File.open!(fileIn)
+      # Create fileOut with fileIn basename
+      fileOut = "build/xml/" <> Path.basename(fileIn, ".jack") <> ".xml"
+      if(File.exists?(fileOut), do: File.rm!(fileOut), else: File.write!(fileOut, ""))
 
-    # Create fileOut with fileIn basename
-    fileOut = "build/xml/" <> Path.basename(fileIn, ".jack") <> ".xml"
-    if(File.exists?(fileOut), do: File.rm!(fileOut), else: File.write!(fileOut, ""))
+      # Call lexer
+      {:ok, finish} = {fileIn, fileOut} |> lexer()
+      IO.puts(finish)
 
-    # Call lexer
-    {fileIn, fileOut} |> lexer(0)
-    File.close(fileIn)
-    File.close(fileOut)
+      File.close(fileIn)
+      File.close(fileOut)
+    else
+      IO.puts(IO.ANSI.format(IO.ANSI.red() <> "\nFile #{fileIn} not found." <> IO.ANSI.reset()))
+      {:error, "File not found."}
+    end
   end
 
-  def lexer({fileIn, fileOut}, initialIndex) do
+  def lexer({fileIn, fileOut}, initialIndex \\ 0) do
     stream = File.read!(fileIn)
     # Get token info from DFA
     tokenObj = stream |> Token.getToken(initialIndex)
@@ -37,6 +43,7 @@ defmodule Lexer do
     # Verify if token is nil (\0) or if not EOF
     if(tokenObj == nil and tokenObj["index"] >= String.length(stream)) do
       File.write!(fileOut, "</tokens>", [:append])
+      {:ok, IO.ANSI.format("\nThe .xml file was saved in " <> IO.ANSI.yellow() <> fileOut <> IO.ANSI.reset())}
     else
       # Write xml tag on fileOut
       tokenObj |> xmler(fileOut)

@@ -30,7 +30,7 @@ Usage: elixir_jack_compiler [FLAGS]... [FILE]...
 FLAGS:
 
 --i path to JACK input file
---o path to XML output file
+--o path to XML output file (case empty, default "build/xml")
 ```
 
 ### Determistic Finite Automaton (DFA)
