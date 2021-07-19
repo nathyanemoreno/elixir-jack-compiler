@@ -5,17 +5,17 @@ defmodule OperatorNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    IO.inspect(
-      "Checking token Operator " <>
-        "--------------------> " <>
-        tokenObj["token"]
-    )
-
+    
     case tokenState do
       0 ->
+        IO.inspect(
+          "Checking token Operator " <>
+            "--------------------> " <>
+            tokenObj["token"]
+        )
         cond do
           # * Go to state 100
-          tokenType == :keyword ->
+          tokenType == :symbol ->
             case token do
               "+" ->
                 checkToken(stream, nextIndex, 100)
@@ -32,31 +32,26 @@ defmodule OperatorNDFA do
               "|" ->
                 checkToken(stream, nextIndex, 100)
 
-              "&amp" ->
+              "&amp;" ->
                 checkToken(stream, nextIndex, 100)
 
-              "&gt" ->
+              "&gt;" ->
                 checkToken(stream, nextIndex, 100)
 
-              "&lt" ->
+              "&lt;" ->
                 checkToken(stream, nextIndex, 100)
 
               "=" ->
                 checkToken(stream, nextIndex, 100)
 
-              _ ->
-                checkToken(stream, index, nil)
+              _ -> %{"finished" => false, "index" => index, "token" => token}
             end
 
-          true ->
-            checkToken(stream, index, nil)
+          true -> %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->
         %{"finished" => true, "index" => index, "token" => token}
-
-      nil ->
-        %{"finished" => false, "index" => index, "token" => token}
     end
   end
 end

@@ -5,14 +5,14 @@ defmodule UnaryOperatorNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    IO.inspect(
-      "Checking token UnaryOperator " <>
-        "--------------------> " <>
-        tokenObj["token"]
-    )
-
+    
     case tokenState do
       0 ->
+        IO.inspect(
+          "Checking token UnaryOperator " <>
+            "--------------------> " <>
+            tokenObj["token"]
+        )
         cond do
           # * Go to state 100
           tokenType == :keyword ->

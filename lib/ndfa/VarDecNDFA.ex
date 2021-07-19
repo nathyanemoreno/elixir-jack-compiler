@@ -5,13 +5,13 @@ defmodule VarDecNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
     # IO.inspect(tokenObj)
-    IO.inspect(
-      "Checking token in VarDec " <>
-        "--------------------> " <> tokenObj["token"]
-    )
-
+    
     case state do
       0 ->
+        IO.inspect(
+          "Checking token in VarDec " <>
+            "--------------------> " <> tokenObj["token"]
+        )
         cond do
           # * If keyword var get next
           tokenType == :keyword and token == "var" ->

@@ -5,61 +5,48 @@ defmodule ParameterListNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
     # IO.inspect(tokenObj)
-    IO.inspect(
-      "Checking token in ParameterList " <>
-        "--------------------> " <> tokenObj["token"]
-    )
-
+    
     case state do
       0 ->
+        IO.inspect(
+          "Checking token in ParameterList " <>
+            "--------------------> " <> tokenObj["token"]
+        )
+        type = TypeNDFA.checkToken(stream, index)
         cond do
-          # * Case is ( read again
-          tokenType == :symbol and token == "(" ->
-            checkToken(stream, nextIndex, 1)
-
+          type["finished"] -> checkToken(stream, type["index"], 1)
           true ->
-            checkToken(stream, nextIndex, nil)
+            checkToken(stream, index, 100)
         end
-
       1 ->
+        varName = VarNameNDFA.checkToken(stream, index)
         cond do
-          # * Case is ) end
-          tokenType == :symbol and token == ")" ->
-            checkToken(stream, nextIndex, 2)
-
-          # * Case is , read again
-          tokenType == :symbol and token == "," ->
-            checkToken(stream, nextIndex, 1)
-
-          # * Case is , read again
-          tokenType == :symbol and token == ";" ->
-            checkToken(stream, nextIndex, 2)
-
-          # * Case is identifier
+          varName["finished"] -> checkToken(stream, varName["index"], 2)
           true ->
-            # * Get type
-            type = TypeNDFA.checkToken(stream, index)
-
-            cond do
-              type["finished"] == true ->
-                checkToken(stream, type["index"], 1)
-
-              true ->
-                # * Get varName
-                varName = VarNameNDFA.checkToken(stream, index)
-
-                cond do
-                  varName["finished"] == true ->
-                    checkToken(stream, varName["index"], 0)
-                end
-            end
+            checkToken(stream, index, 100)
         end
-
       2 ->
+        cond do
+          tokenType == :symbol and token == "," ->
+            checkToken(stream, nextIndex, 3)
+          true -> checkToken(stream, index, 100)
+        end
+      3 ->
+        type = TypeNDFA.checkToken(stream, index)
+        cond do
+          type["finished"] -> checkToken(stream, type["index"], 4)
+          true ->
+            checkToken(stream, index, 100)
+        end
+      4 ->
+        varName = VarNameNDFA.checkToken(stream, index)
+        cond do
+          varName["finished"] -> checkToken(stream, varName["index"], 2)
+          true ->
+            checkToken(stream, index, 100)
+        end
+      100 ->
         %{"finished" => true, "index" => index, "token" => token}
-
-      nil ->
-        %{"finished" => false, "index" => index, "token" => token}
     end
   end
 end

@@ -1,31 +1,30 @@
 defmodule StatementsNDFA do
   def checkToken(stream, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
+    IO.puts(tokenObj["index"])
+    IO.puts("Oi")
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    IO.inspect(
-      "Checking token Statement " <>
-        "--------------------> " <>
-        tokenObj["token"]
-    )
-
+    
     case tokenState do
       0 ->
+        IO.inspect(
+          "Checking token Statements " <>
+            "--------------------> " <>
+            tokenObj["token"]
+        )
         # * Go to state 100
-        returnStatement = ReturnStatementNDFA.checkToken(stream, index)
+        statement = StatementNDFA.checkToken(stream, index)
 
-        case returnStatement["finished"] do
-          false -> IO.puts("Syntax error")
-          true -> checkToken(stream, returnStatement["index"], 2)
+        cond do
+          statement["finished"] -> checkToken(stream, statement["index"], 0)
+          true -> checkToken(stream, statement["index"], 100)
         end
 
       100 ->
         %{"finished" => true, "index" => index, "token" => token}
-
-      nil ->
-        %{"finished" => false, "index" => index, "token" => token}
     end
   end
 end

@@ -4,10 +4,10 @@ defmodule SubroutineNameNDFA do
     tokenType = tokenObj["type"]
     token= tokenObj["token"]
     # IO.inspect(tokenType)
-    IO.inspect("Checking token SubroutineName " <> "--------------------> " <> tokenObj["token"])
-
+    
     case state do
       0 ->
+        IO.inspect("Checking token SubroutineName " <> "--------------------> " <> tokenObj["token"])
         case tokenType do
           :identifier -> checkToken(stream, index, 1)
           _ -> IO.puts("Syntax error")

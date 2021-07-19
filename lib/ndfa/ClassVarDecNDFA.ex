@@ -5,15 +5,15 @@ defmodule ClassVarDecNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
     # IO.inspect(tokenObj)
-    IO.inspect(
-      "Checking token in ClassVarDec " <>
-        "--------------------> " <>
-        tokenObj["token"]
-    )
-
+    
     case state do
       # * Read: keyword
       0 ->
+        IO.inspect(
+          "Checking token in ClassVarDec " <>
+            "--------------------> " <>
+            tokenObj["token"]
+        )
         cond do
           # * If token is "field" or "static" got to state 1
           tokenType == :keyword and (token == "field" or token == "static") ->

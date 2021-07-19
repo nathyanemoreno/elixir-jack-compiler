@@ -20,15 +20,14 @@ defmodule SyntaxerDFA do
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
-
-    IO.inspect(
-      "Checking ClassDef" <>
-        "--------------------> " <>
-        tokenObj["token"]
-    )
-
+    
     case tokenState do
       0 ->
+        IO.inspect(
+          "Checking ClassDef" <>
+            "--------------------> " <>
+            tokenObj["token"]
+        )
         cond do
           # * Go to state 1
           tokenType == :keyword and token == "class" -> checkToken(stream, nextIndex, 1)

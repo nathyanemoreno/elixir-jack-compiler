@@ -5,18 +5,18 @@ defmodule IfStatementNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    IO.inspect(
-      "Checking token IfStatement " <>
-        "--------------------> " <>
-        tokenObj["token"]
-    )
-
+    
     case tokenState do
       0 ->
+        IO.inspect(
+          "Checking token IfStatement " <>
+            "--------------------> " <>
+            tokenObj["token"]
+        )
         cond do
           # * Go to state 1
           tokenType == :keyword and token == "if" -> checkToken(stream, nextIndex, 1)
-          true -> checkToken(stream, index, nil)
+          true -> %{"finished" => false, "index" => index, "token" => token}
         end
 
       1 ->
@@ -26,28 +26,27 @@ defmodule IfStatementNDFA do
             checkToken(stream, nextIndex, 2)
 
           true ->
-            checkToken(stream, index, nil)
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       2 ->
-        expression = Expression.checkToken(stream, nextIndex)
-
-        case expression["finished"] do
-          false ->
-            checkToken(stream, expression["index"], nil)
+        expression = ExpressionNDFA.checkToken(stream, index)
+        
+        cond do
+          expression["finished"] ->
+            checkToken(stream, expression["index"], 3)
 
           true ->
-            checkToken(stream, expression["index"], 3)
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       3 ->
         cond do
           tokenType == :symbol and token == ")" ->
-            # * If find ] look for = in state 2
             checkToken(stream, nextIndex, 4)
 
           true ->
-            checkToken(stream, index, nil)
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       4 ->
@@ -57,15 +56,15 @@ defmodule IfStatementNDFA do
             checkToken(stream, nextIndex, 5)
 
           true ->
-            checkToken(stream, index, nil)
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       5 ->
-        statements = Expression.checkToken(stream, nextIndex)
+        statements = StatementsNDFA.checkToken(stream, nextIndex)
 
         case statements["finished"] do
           false ->
-            checkToken(stream, statements["index"], nil)
+            %{"finished" => false, "index" => index, "token" => token}
 
           true ->
             checkToken(stream, statements["index"], 6)
@@ -74,25 +73,47 @@ defmodule IfStatementNDFA do
       6 ->
         cond do
           tokenType == :symbol and token == "}" ->
-            # * If find ] look for = in state 2
             checkToken(stream, nextIndex, 7)
 
           true ->
-            checkToken(stream, index, nil)
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       7 ->
         cond do
-          # * Go to state 1
-          tokenType == :keyword and token == "else" -> checkToken(stream, nextIndex, 4)
-          true -> checkToken(stream, index, nil)
+          tokenType == :keyword and token == "else" -> checkToken(stream, nextIndex, 8)
+          true -> checkToken(stream, index, 100)
+        end
+      8 ->
+        cond do
+          tokenType == :symbol and token == "{" ->
+            checkToken(stream, nextIndex, 9)
+
+          true ->
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
+      9 ->
+        statements = StatementsNDFA.checkToken(stream, nextIndex)
+
+        case statements["finished"] do
+          false ->
+            %{"finished" => false, "index" => index, "token" => token}
+
+          true ->
+            checkToken(stream, statements["index"], 10)
+        end
+
+      10 ->
+        cond do
+          tokenType == :symbol and token == "}" ->
+            checkToken(stream, nextIndex, 100)
+
+          true ->
+            %{"finished" => false, "index" => index, "token" => token}
+        end
       100 ->
         %{"finished" => true, "index" => index, "token" => token}
-
-      nil ->
-        %{"finished" => false, "index" => index, "token" => token}
     end
   end
 end

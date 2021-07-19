@@ -5,61 +5,65 @@ defmodule SubroutineDecNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
 
-    IO.inspect(
-      "Checking token in SubroutineDec " <>
-        "--------------------> " <>
-        tokenObj["token"]
-    )
-
+    
     case state do
       # Read: keyword
       0 ->
+        IO.inspect(
+          "Checking token in SubroutineDec " <>
+            "--------------------> " <>
+            tokenObj["token"]
+        )
         cond do
           tokenType == :keyword and
               (token == "constructor" or token == "function" or token == "method") ->
             checkToken(stream, nextIndex, 1)
 
           true ->
-            checkToken(stream, index, nil)
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       1 ->
-        type = TypeNDFA.checkToken(stream, index)
-
         cond do
-          (tokenType == :keyword and token == "void") or type["finished"] == true ->
-            subroutine = SubroutineNameNDFA.checkToken(stream, index)
-
-            case subroutine["finished"] do
-              false ->
-                Syntax.unexpectedToken(token)
-
-              true ->
-                checkToken(stream, subroutine["index"], 2)
+          tokenType == :keyword and token == "void" -> checkToken(stream, nextIndex, 2)
+          true ->
+            type = TypeNDFA.checkToken(stream, index)
+            
+            cond do
+              type["finished"] -> checkToken(stream, type["index"], 2)
+              true -> %{"finished" => false, "index" => index, "token" => token}
             end
-
-          true ->
-            IO.puts("Syntax error")
         end
-
-      # Read: type
       2 ->
-        type = TypeNDFA.checkToken(stream, index)
-
-        case type["finished"] do
-          false ->
-            Syntax.unexpectedToken(token)
-
-          true ->
-            checkToken(stream, type["index"], 3)
+        subroutineName = SubroutineNameNDFA.checkToken(stream, index)
+        cond do
+          subroutineName["finished"] -> checkToken(stream, subroutineName["index"], 3)
+          true -> %{"finished" => false, "index" => index, "token" => token}
         end
-
-      # Read: varName
       3 ->
+        cond do
+          tokenType == :symbol and token == "(" -> checkToken(stream, nextIndex, 4)
+          true -> %{"finished" => false, "index" => index, "token" => token}
+        end
+      4 ->
+        parameterList = ParameterListNDFA.checkToken(stream, index)
+        cond do
+          parameterList["finished"] -> checkToken(stream, parameterList["index"], 5)
+          true -> %{"finished" => false, "index" => index, "token" => token}
+        end
+        5 ->
+        cond do
+          tokenType == :symbol and token == ")" -> checkToken(stream, nextIndex, 6)
+          true -> %{"finished" => false, "index" => index, "token" => token}
+        end
+      6 ->
+        subroutineBody = SubroutineBodyNDFA.checkToken(stream, index)
+        cond do
+          subroutineBody["finished"] -> checkToken(stream, subroutineBody["index"], 100)
+          true -> %{"finished" => false, "index" => index, "token" => token}
+        end
+      100 ->
         %{"finished" => true, "index" => index, "token" => token}
-
-      nil ->
-        %{"finished" => false, "index" => index, "token" => token}
     end
   end
 end

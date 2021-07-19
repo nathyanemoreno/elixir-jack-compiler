@@ -5,31 +5,29 @@ defmodule StatementNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    IO.inspect(
-      "Checking token Statement " <>
-        "--------------------> " <>
-        tokenObj["token"]
-    )
-
+    
     case tokenState do
       0 ->
-        # * Go to state 1
-        returnStatement = ReturnStatementNDFA.checkToken(stream, index)
-
-        case returnStatement["finished"] do
-          false -> IO.puts("Syntax error")
-          true -> checkToken(stream, returnStatement["index"], 2)
-        end
-
-      1 ->
+        IO.inspect(
+          "Checking token Statement " <>
+            "--------------------> " <>
+            tokenObj["token"]
+        )
         letStatement = LetStatementNDFA.checkToken(stream, index)
-
-        case letStatement["finished"] do
-          false -> IO.puts("Syntax error")
-          true -> checkToken(stream, letStatement["index"], 2)
+        ifStatement = IfStatementNDFA.checkToken(stream, index)
+        # whileStatement = WhileStatementNDFA.checkToken(stream, index)
+        # doStatment = DoStatementNDFA.checkToken(stream, index)
+        # returnStatement = ReturnStatementNDFA.checkToken(stream, index)
+        
+        cond do
+          letStatement["finished"] -> checkToken(stream, letStatement["index"], 100)
+          ifStatement["finished"] -> checkToken(stream, ifStatement["index"], 100)
+          # whileStatement["finished"] -> checkToken(stream, whileStatement["index"], 100)
+          # doStatment["finished"] -> checkToken(stream, doStatment["index"], 100)
+          # returnStatement["finished"] -> checkToken(stream, returnStatement["index"], 100)
+          true -> %{"finished" => false, "index" => index, "token" => token}
         end
-
-      2 ->
+      100 ->
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

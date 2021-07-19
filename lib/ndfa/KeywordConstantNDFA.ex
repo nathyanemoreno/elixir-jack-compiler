@@ -5,14 +5,14 @@ defmodule KeywordConstantNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    IO.inspect(
-      "Checking token KeywordConstant " <>
-        "--------------------> " <>
-        tokenObj["token"]
-    )
-
+    
     case tokenState do
       0 ->
+        IO.inspect(
+          "Checking token KeywordConstant " <>
+            "--------------------> " <>
+            tokenObj["token"]
+        )
         cond do
           tokenType == :keyword and token == "true" -> checkToken(stream, nextIndex, 100)
           tokenType == :keyword and token == "false" -> checkToken(stream, nextIndex, 100)

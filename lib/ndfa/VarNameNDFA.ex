@@ -5,13 +5,13 @@ defmodule VarNameNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
     # IO.inspect(tokenObj)
-    IO.inspect(
-      "Checking token in VarName " <>
-        "--------------------> " <> tokenObj["token"]
-    )
-
+    
     case tokenState do
       0 ->
+        IO.inspect(
+          "Checking token in VarName " <>
+            "--------------------> " <> tokenObj["token"]
+        )
         cond do
           # * If identifier get next
           tokenType == :identifier ->

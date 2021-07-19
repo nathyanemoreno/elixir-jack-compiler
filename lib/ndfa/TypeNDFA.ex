@@ -4,31 +4,33 @@ defmodule TypeNDFA do
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
-    IO.inspect("Checking token in Type " <> "--------------------> " <> tokenObj["token"])
-
+    
     case state do
       # Read: keyword
       0 ->
-        className = ClassNameNDFA.checkToken(stream, index)
-
+        IO.inspect("Checking token in Type " <> "--------------------> " <> tokenObj["token"])
+        
         cond do
           tokenType == :keyword and token == "int" ->
-            checkToken(stream, nextIndex, 1)
-
+            checkToken(stream, nextIndex, 100)
+            
           tokenType == :keyword and token == "char" ->
-            checkToken(stream, nextIndex, 1)
-
+            checkToken(stream, nextIndex, 100)
+            
           tokenType == :keyword and token == "boolean" ->
-            checkToken(stream, nextIndex, 1)
-
-          className["finished"] == true ->
-            checkToken(stream, className["index"], 1)
-
+            checkToken(stream, nextIndex, 100)
+            
           true ->
-            %{"finished" => true, "index" => index, "token" => token}
+            className = ClassNameNDFA.checkToken(stream, index)
+            
+            cond do
+              className["finished"] ->
+                checkToken(stream, className["index"], 100)
+              true -> %{"finished" => false, "index" => index, "token" => token}
+            end
         end
 
-      1 ->
+      100 ->
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

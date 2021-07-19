@@ -5,21 +5,17 @@ defmodule ClassNameNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
     # IO.inspect(tokenObj)
-    IO.inspect("Checking token in ClassName " <> "--------------------> " <> tokenObj["token"])
-
+    
     case state do
       0 ->
+        IO.inspect("Checking token in ClassName " <> "--------------------> " <> tokenObj["token"])
         case tokenType do
-          :identifier -> checkToken(stream, nextIndex, 1)
-          _ -> checkToken(stream, nextIndex, nil)
+          :identifier -> checkToken(stream, nextIndex, 100)
+          _ -> %{"finished" => false, "index" => index, "token" => token}
         end
 
-      1 ->
+      100 ->
         %{"finished" => true, "index" => index, "token" => token}
-
-      nil ->
-        # Syntax.unexpectedToken(token)
-        %{"finished" => false, "index" => index, "token" => token}
     end
   end
 end
