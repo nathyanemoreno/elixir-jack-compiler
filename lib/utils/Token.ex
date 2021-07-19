@@ -78,7 +78,7 @@ end
 
 defmodule Token do
   def getToken(fileName, cCharIndex) do
-    fileName |> DFA.peekToken(0, cCharIndex, "")
+    fileName |> LexerDFA.checkTokenToken(0, cCharIndex, "")
   end
 
   def tokenType(token) do

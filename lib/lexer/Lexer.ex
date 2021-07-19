@@ -6,7 +6,7 @@ defmodule Lexer do
     if(File.exists?(fileOut), do: File.rm!(fileOut), else: File.write!(fileOut, ""))
 
     # Call lexer
-    {fileIn, fileOut} |> lexer()
+    {fileIn, fileOut} |> Xmler.run()
     # Close files
     File.close(fileIn)
     File.close(fileOut)
@@ -21,7 +21,7 @@ defmodule Lexer do
       if(File.exists?(fileOut), do: File.rm!(fileOut), else: File.write!(fileOut, ""))
 
       # Call lexer
-      {:ok, finish} = {fileIn, fileOut} |> lexer()
+      {:ok, finish} = {fileIn, fileOut} |> Xmler.run()
       IO.puts(finish)
 
       File.close(fileIn)
@@ -32,28 +32,10 @@ defmodule Lexer do
     end
   end
 
-  def lexer({fileIn, fileOut}, initialIndex \\ 0) do
-    stream = File.read!(fileIn)
+  def lexer(stream, initialIndex \\ 0) do
     # Get token info from DFA
     tokenObj = stream |> Token.getToken(initialIndex)
-
-    # Write first tag <token/>
-    if(initialIndex == 0, do: File.write!(fileOut, "<tokens>\n", [:append]))
-
-    # Verify if token is nil (\0) or if not EOF
-    if(tokenObj == nil and tokenObj["index"] >= String.length(stream)) do
-      File.write!(fileOut, "</tokens>", [:append])
-      {:ok, IO.ANSI.format("\nThe .xml file was saved in " <> IO.ANSI.yellow() <> fileOut <> IO.ANSI.reset())}
-    else
-      # Write xml tag on fileOut
-      tokenObj |> xmler(fileOut)
-      # Recall lexer with last index returned
-      lexer({fileIn, fileOut}, tokenObj["index"])
-    end
+    tokenObj
   end
 
-  def xmler(tokenObj, fileOut) do
-    tag = "<#{tokenObj["type"]}> #{tokenObj["token"]} </#{tokenObj["type"]}>\n"
-    File.write!(fileOut, tag, [:append])
-  end
 end
