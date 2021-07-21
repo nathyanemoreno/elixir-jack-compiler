@@ -1,5 +1,5 @@
 defmodule ParameterListNDFA do
-  def checkToken(stream, index, state \\ 0) do
+  def checkToken(stream, xml_carry, index, state \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     tokenType = tokenObj["type"]
     token = tokenObj["token"]
@@ -8,45 +8,42 @@ defmodule ParameterListNDFA do
     
     case state do
       0 ->
-        IO.inspect(
-          "Checking token in ParameterList " <>
-            "--------------------> " <> tokenObj["token"]
-        )
-        type = TypeNDFA.checkToken(stream, index)
+        IO.inspect("Checking token in ParameterList ")
+        type = TypeNDFA.checkToken(stream, "", index)
         cond do
-          type["finished"] -> checkToken(stream, type["index"], 1)
+          type["finished"] -> checkToken(stream, type["xml"], type["index"], 1)
           true ->
-            checkToken(stream, index, 100)
+            checkToken(stream, xml_carry, index, 100)
         end
       1 ->
-        varName = VarNameNDFA.checkToken(stream, index)
+        varName = VarNameNDFA.checkToken(stream, "", index)
         cond do
-          varName["finished"] -> checkToken(stream, varName["index"], 2)
+          varName["finished"] -> checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 2)
           true ->
-            checkToken(stream, index, 100)
+            checkToken(stream, xml_carry, index, 100)
         end
       2 ->
         cond do
           tokenType == :symbol and token == "," ->
-            checkToken(stream, nextIndex, 3)
-          true -> checkToken(stream, index, 100)
+            checkToken(stream, xml_carry <> "\n<symbol> , </symbol>", nextIndex, 3)
+          true -> checkToken(stream, xml_carry, index, 100)
         end
       3 ->
-        type = TypeNDFA.checkToken(stream, index)
+        type = TypeNDFA.checkToken(stream, "", index)
         cond do
-          type["finished"] -> checkToken(stream, type["index"], 4)
+          type["finished"] -> checkToken(stream, xml_carry <> "\n" <> type["xml"], type["index"], 4)
           true ->
-            checkToken(stream, index, 100)
+            checkToken(stream, xml_carry, index, 100)
         end
       4 ->
-        varName = VarNameNDFA.checkToken(stream, index)
+        varName = VarNameNDFA.checkToken(stream, "", index)
         cond do
-          varName["finished"] -> checkToken(stream, varName["index"], 2)
+          varName["finished"] -> checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 2)
           true ->
-            checkToken(stream, index, 100)
+            checkToken(stream, xml_carry, index, 100)
         end
       100 ->
-        %{"finished" => true, "index" => index, "token" => token}
+        %{"finished" => true, "index" => index, "token" => token, "xml" => "<parameterList>\n" <> xml_carry <> "\n</parameterList>"}
     end
   end
 end

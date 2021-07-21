@@ -1,5 +1,5 @@
 defmodule VarNameNDFA do
-  def checkToken(stream, index, tokenState \\ 0) do
+  def checkToken(stream, xml_carry, index, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     tokenType = tokenObj["type"]
     token = tokenObj["token"]
@@ -8,24 +8,19 @@ defmodule VarNameNDFA do
     
     case tokenState do
       0 ->
-        IO.inspect(
-          "Checking token in VarName " <>
-            "--------------------> " <> tokenObj["token"]
-        )
+        IO.puts("Checking token in VarName")
         cond do
           # * If identifier get next
-          tokenType == :identifier ->
-            checkToken(stream, nextIndex, 100)
+          tokenType == :identifier -> checkToken(stream, "<identifier> " <> token <> " </identifier>", nextIndex, 100)
 
-          true ->
-            checkToken(stream, index, nil)
+          true -> 
+            IO.puts(">> Exiting VarNameNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
 
       100 ->
-        %{"finished" => true, "index" => index, "token" => token}
-
-      nil ->
-        %{"finished" => false, "index" => index, "token" => token}
+        IO.puts(">> Exiting VarNameNDFA (SUCCESS)")
+        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
     end
   end
 end

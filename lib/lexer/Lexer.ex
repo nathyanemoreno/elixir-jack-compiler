@@ -35,8 +35,12 @@ defmodule Lexer do
   def lexer(stream, initialIndex \\ 0) do
     # Get token info from DFA
     tokenObj = stream |> Token.getToken(initialIndex)
-    IO.puts(tokenObj["token"])
-    tokenObj
+    cond do
+      tokenObj != nil ->
+        IO.puts("Peek ---> " <> tokenObj["token"])
+        tokenObj
+      true -> tokenObj
+    end
   end
 
 end

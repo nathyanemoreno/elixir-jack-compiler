@@ -1,5 +1,5 @@
 defmodule TypeNDFA do
-  def checkToken(stream, index, state \\ 0) do
+  def checkToken(stream, xml_carry, index, state \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
@@ -8,30 +8,30 @@ defmodule TypeNDFA do
     case state do
       # Read: keyword
       0 ->
-        IO.inspect("Checking token in Type " <> "--------------------> " <> tokenObj["token"])
+        IO.inspect("Checking token in Type")
         
         cond do
           tokenType == :keyword and token == "int" ->
-            checkToken(stream, nextIndex, 100)
+            checkToken(stream, "<keyword> int </keyword>", nextIndex, 100)
             
           tokenType == :keyword and token == "char" ->
-            checkToken(stream, nextIndex, 100)
+            checkToken(stream, "<keyword> char </keyword>", nextIndex, 100)
             
           tokenType == :keyword and token == "boolean" ->
-            checkToken(stream, nextIndex, 100)
+            checkToken(stream, "<keyword> boolean </keyword>", nextIndex, 100)
             
           true ->
-            className = ClassNameNDFA.checkToken(stream, index)
+            className = ClassNameNDFA.checkToken(stream, "", index)
             
             cond do
               className["finished"] ->
-                checkToken(stream, className["index"], 100)
-              true -> %{"finished" => false, "index" => index, "token" => token}
+                checkToken(stream, xml_carry <> className["xml"], className["index"], 100)
+              true -> %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
             end
         end
 
       100 ->
-        %{"finished" => true, "index" => index, "token" => token}
+        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
     end
   end
 end

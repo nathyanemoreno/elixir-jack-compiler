@@ -14,6 +14,8 @@ class Square {
             let name = Ax;
             if (size > 2) {
 
+            } else {
+                  
             }
             
             // let size = Asize;

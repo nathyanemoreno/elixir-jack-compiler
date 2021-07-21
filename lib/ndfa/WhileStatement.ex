@@ -1,5 +1,5 @@
 defmodule WhileStatementNDFA do
-  def checkToken(stream, index \\ 0, tokenState \\ 0) do
+  def checkToken(stream, xml_carry, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
@@ -8,55 +8,77 @@ defmodule WhileStatementNDFA do
     
     case tokenState do
       0 ->
-        IO.inspect(
-          "Checking token WhileStatementNDFA " <>
-            "--------------------> " <>
-            tokenObj["token"]
-        )
+        IO.puts("Checking token WhileStatementNDFA")
         cond do
           # * Go to state 1
-          tokenType == :keyword and token == "while" -> checkToken(stream, index, 1)
-          true -> %{"finished" => false, "index" => index, "token" => token}
+          tokenType == :keyword and token == "if" -> checkToken(stream, "<keyword> while </keyword>", nextIndex, 1)
+          true ->
+            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
+
       1 ->
         cond do
-          # * Go to state 2
-          tokenType == :symbol and token == "(" -> checkToken(stream, index, 2)
-          true -> %{"finished" => false, "index" => index, "token" => token}
+          tokenType == :symbol and token == "(" ->
+            # * If find ( look for expression
+            checkToken(stream, xml_carry, nextIndex <> "\n<symbol> ( </symbol>", 2)
+          true ->
+            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
+
       2 ->
+        expression = ExpressionNDFA.checkToken(stream, "", index)
+        
         cond do
-          # * Go to state 3
-          tokenType == :symbol and token == "{" -> checkToken(stream, index, 3)
-          true -> %{"finished" => false, "index" => index, "token" => token}
+          expression["finished"] ->
+            checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 3)
+          true ->
+            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
+
       3 ->
         cond do
-          # * Go to state 4
-          tokenType == :symbol and token == ")" -> checkToken(stream, index, 4)
-          true -> %{"finished" => false, "index" => index, "token" => token}
+          tokenType == :symbol and token == ")" ->
+            checkToken(stream, xml_carry <> "\n<symbol> ) </symbol>", nextIndex, 4)
+          true ->
+            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
       4 ->
         cond do
-          # * Go to state 5
-          tokenType == :symbol and token == "{" -> checkToken(stream, index, 5)
-          true -> %{"finished" => false, "index" => index, "token" => token}
+          tokenType == :symbol and token == "{" ->
+            # * If find ( look for expression
+            checkToken(stream, xml_carry <> "\n<symbol> { </symbol>", nextIndex, 5)
+          true ->
+            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
+
       5 ->
-        cond do
-          # * Go to state 6
-          tokenType == :symbol and token == ")" -> checkToken(stream, index, 6)
-          true -> %{"finished" => false, "index" => index, "token" => token}
+        statements = StatementsNDFA.checkToken(stream, "", index)
+
+        case statements["finished"] do
+          false ->
+            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+          true ->
+            checkToken(stream, xml_carry <> "\n" <> statements["xml"], statements["index"], 6)
         end
+
       6 ->
-        statments = StatementsNDFA.checkToken(stream, index, 1);
-        
         cond do
-          # * Go to state 100
-          statments["finished"] -> checkToken(stream, statments["index"])
-          true -> %{"finished" => false, "index" => index, "token" => token}
+          tokenType == :symbol and token == "}" ->
+            checkToken(stream, xml_carry <> "\n<symbol> } </symbol>", nextIndex, 100)
+          true ->
+            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
-      100 -> %{"finished" => true, "index" => index, "token" => token}
+      
+      100 ->
+        IO.puts(">> Exiting WhileStatementNDFA (SUCCESS)")
+        %{"finished" => true, "index" => index, "token" => token, "xml" => "<whileStatement>\n" <> xml_carry <> "\n</whileStatement>"}
     end
   end
 end

@@ -1,5 +1,5 @@
 defmodule SubroutineBodyNDFA do
-  def checkToken(stream, index, state \\ 0) do
+  def checkToken(stream, xml_carry, index, state \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     tokenType = tokenObj["type"]
     token = tokenObj["token"]
@@ -8,42 +8,43 @@ defmodule SubroutineBodyNDFA do
     
     case state do
       0 ->
-        IO.inspect(
-          "Checking token in SubroutineBody " <>
-            "--------------------> " <> tokenObj["token"]
-        )
+        IO.inspect("Checking token in SubroutineBody ")
         cond do
           tokenType == :symbol and token == "{" ->
-            checkToken(stream, nextIndex, 1)
+            checkToken(stream, "<symbol> { </symbol>", nextIndex, 1)
           true ->
-            %{"finished" => false, "index" => index, "token" => token}
+            IO.puts(">> Exiting SubroutineBodyNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
 
       1 ->
-        varDec = VarDecNDFA.checkToken(stream, index)
+        varDec = VarDecNDFA.checkToken(stream, "", index)
 
         cond do
           varDec["finished"] ->
-            checkToken(stream, varDec["index"], 1)
+            checkToken(stream, xml_carry <> "\n" <> varDec["xml"] <> varDec["index"], 1)
           true ->
-            checkToken(stream, index, 2)
+            checkToken(stream, xml_carry, index, 2)
         end
 
       2 ->
-        statementsNDFA = StatementsNDFA.checkToken(stream, index)
-
+        statementsNDFA = StatementsNDFA.checkToken(stream, "", index)
         cond do
-          statementsNDFA["finished"] -> checkToken(stream, statementsNDFA["index"], 3)
-          true -> %{"finished" => false, "index" => index, "token" => token}
+          statementsNDFA["finished"] -> checkToken(stream, xml_carry <> "\n" <> statementsNDFA["xml"], statementsNDFA["index"], 3)
+          true ->
+            IO.puts(">> Exiting SubroutineBodyNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
       3 ->
         cond do
-          tokenType == :symbol and token == "}" -> checkToken(stream, nextIndex, 100)
+          tokenType == :symbol and token == "}" -> checkToken(stream, xml_carry <> "\n<symbol> } </symbol>", nextIndex, 100)
           true ->
-            %{"finished" => false, "index" => index, "token" => token}
+            IO.puts(">> Exiting SubroutineBodyNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
       100 ->
-        %{"finished" => true, "index" => index, "token" => token}
+        IO.puts(">> Exiting SubroutineBodyNDFA (SUCCESS)")
+        %{"finished" => true, "index" => index, "token" => token, "xml" => "<subroutineBody>\n" <> xml_carry <> "\n</subroutineBody>"}
     end
   end
 end

@@ -1,5 +1,5 @@
 defmodule OperatorNDFA do
-  def checkToken(stream, index \\ 0, tokenState \\ 0) do
+  def checkToken(stream, xml_carry, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
@@ -9,49 +9,51 @@ defmodule OperatorNDFA do
     case tokenState do
       0 ->
         IO.inspect(
-          "Checking token Operator " <>
-            "--------------------> " <>
-            tokenObj["token"]
-        )
+          "Checking token Operator")
         cond do
           # * Go to state 100
           tokenType == :symbol ->
             case token do
               "+" ->
-                checkToken(stream, nextIndex, 100)
+                checkToken(stream,  "<symbol> + </symbol>", nextIndex, 100)
 
               "-" ->
-                checkToken(stream, nextIndex, 100)
+                checkToken(stream,  "<symbol> - </symbol>", nextIndex, 100)
 
               "*" ->
-                checkToken(stream, nextIndex, 100)
+                checkToken(stream,  "<symbol> * </symbol>", nextIndex, 100)
 
               "/" ->
-                checkToken(stream, nextIndex, 100)
+                checkToken(stream,  "<symbol> / </symbol>", nextIndex, 100)
 
               "|" ->
-                checkToken(stream, nextIndex, 100)
+                checkToken(stream,  "<symbol> | </symbol>", nextIndex, 100)
 
               "&amp;" ->
-                checkToken(stream, nextIndex, 100)
+                checkToken(stream,  "<symbol> &amp; </symbol>", nextIndex, 100)
 
               "&gt;" ->
-                checkToken(stream, nextIndex, 100)
+                checkToken(stream,  "<symbol> &gt; </symbol>", nextIndex, 100)
 
               "&lt;" ->
-                checkToken(stream, nextIndex, 100)
+                checkToken(stream,  "<symbol> &lt; </symbol>", nextIndex, 100)
 
               "=" ->
-                checkToken(stream, nextIndex, 100)
+                checkToken(stream,  "<symbol> = </symbol>", nextIndex, 100)
 
-              _ -> %{"finished" => false, "index" => index, "token" => token}
+              _ ->
+                IO.puts(">> Exiting OperatorNDFA (FAILED)")
+                %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
             end
 
-          true -> %{"finished" => false, "index" => index, "token" => token}
+          true ->
+            IO.puts(">> Exiting OperatorNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
 
       100 ->
-        %{"finished" => true, "index" => index, "token" => token}
+        IO.puts(">> Exiting OperatorNDFA (SUCCESS)")
+        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
     end
   end
 end

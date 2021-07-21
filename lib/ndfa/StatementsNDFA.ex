@@ -1,30 +1,24 @@
 defmodule StatementsNDFA do
-  def checkToken(stream, index \\ 0, tokenState \\ 0) do
+  def checkToken(stream, xml_carry, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
-    IO.puts(tokenObj["index"])
-    IO.puts("Oi")
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
-
     
     case tokenState do
       0 ->
-        IO.inspect(
-          "Checking token Statements " <>
-            "--------------------> " <>
-            tokenObj["token"]
-        )
+        IO.inspect("Checking token Statements")
         # * Go to state 100
-        statement = StatementNDFA.checkToken(stream, index)
+        statement = StatementNDFA.checkToken(stream, "", index)
 
         cond do
-          statement["finished"] -> checkToken(stream, statement["index"], 0)
-          true -> checkToken(stream, statement["index"], 100)
+          statement["finished"] -> checkToken(stream, xml_carry <> "\n" <> statement["xml"], statement["index"], 0)
+          true -> checkToken(stream, xml_carry, statement["index"], 100)
         end
 
       100 ->
-        %{"finished" => true, "index" => index, "token" => token}
+        IO.puts(">> Exiting StatementsNDFA (SUCCESS)")
+        %{"finished" => true, "index" => index, "token" => token, "xml" => "<statements>" <> xml_carry <> "\n</statements>"}
     end
   end
 end

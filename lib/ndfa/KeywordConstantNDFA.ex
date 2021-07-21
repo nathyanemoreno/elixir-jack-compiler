@@ -1,31 +1,27 @@
 defmodule KeywordConstantNDFA do
-  def checkToken(stream, index \\ 0, tokenState \\ 0) do
+  def checkToken(stream, xml_carry, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
-
     
     case tokenState do
       0 ->
         IO.inspect(
-          "Checking token KeywordConstant " <>
-            "--------------------> " <>
-            tokenObj["token"]
-        )
+          "Checking token KeywordConstant")
         cond do
-          tokenType == :keyword and token == "true" -> checkToken(stream, nextIndex, 100)
-          tokenType == :keyword and token == "false" -> checkToken(stream, nextIndex, 100)
-          tokenType == :keyword and token == "null" -> checkToken(stream, nextIndex, 100)
-          tokenType == :keyword and token == "this" -> checkToken(stream, nextIndex, 100)
-          true -> checkToken(stream, index, nil)
+          tokenType == :keyword and token == "true" -> checkToken(stream, xml_carry, nextIndex, 100)
+          tokenType == :keyword and token == "false" -> checkToken(stream, xml_carry, nextIndex, 100)
+          tokenType == :keyword and token == "null" -> checkToken(stream, xml_carry, nextIndex, 100)
+          tokenType == :keyword and token == "this" -> checkToken(stream, xml_carry, nextIndex, 100)
+          true ->
+            IO.puts(">> Exiting KeywordConstantNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
 
       100 ->
-        %{"finished" => true, "index" => index, "token" => token}
-
-      nil ->
-        %{"finished" => false, "index" => index, "token" => token}
+        IO.puts(">> Exiting KeywordConstantNDFA (SUCCESS)")
+        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
     end
   end
 end
