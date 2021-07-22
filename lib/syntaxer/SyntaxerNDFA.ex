@@ -32,7 +32,9 @@ defmodule SyntaxerNDFA do
         cond do
           # * Go to state 1
           tokenType == :keyword and token == "class" -> checkToken(stream, "<keyword> class </keyword>", nextIndex, 1)
-          true -> checkToken(stream, xml_carry, index, nil)
+          true ->
+            Syntax.unexpectedToken(token)
+            IO.puts(xml_carry)
         end
 
       1 ->
@@ -42,6 +44,7 @@ defmodule SyntaxerNDFA do
           # * If error reading ClassName then return unexpected token
           false ->
             Syntax.unexpectedToken(token)
+            IO.puts(xml_carry)
 
           true ->
             checkToken(stream, xml_carry <> "\n" <> className["xml"], className["index"], 2)
@@ -50,9 +53,10 @@ defmodule SyntaxerNDFA do
       2 ->
         case token do
           "{" ->
-            checkToken(stream, xml_carry <> "\n<symbol> ; </symbol>", nextIndex, 3)
+            checkToken(stream, xml_carry <> "\n<symbol> { </symbol>", nextIndex, 3)
 
           _ ->
+            IO.puts(xml_carry)
             Syntax.unexpectedToken(token)
         end
 
@@ -73,12 +77,13 @@ defmodule SyntaxerNDFA do
             
             case subroutineDec["finished"] do
               true -> checkToken(stream, xml_carry <> "\n" <> subroutineDec["xml"], subroutineDec["index"], 4)
-              false -> Syntax.unexpectedToken(token)
+              false ->
+                IO.puts(xml_carry)
+                Syntax.unexpectedToken(token)
             end
         end
       100 ->
-        IO.puts("Class read successifully")
-        IO.puts(xml_carry)
+        IO.puts("SUCCESS!")
         xml_carry
     end
   end

@@ -11,7 +11,7 @@ defmodule ExpressionNDFA do
         IO.puts("Checking token Expression")
         term = TermNDFA.checkToken(stream, "", index)
         cond do
-          term["finished"] -> checkToken(stream, xml_carry <> "\n" <> term["xml"], term["index"], 1)
+          term["finished"] -> checkToken(stream, term["xml"], term["index"], 1)
           true ->
             IO.puts(">> Exiting ExpressionNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "xml" => ""}

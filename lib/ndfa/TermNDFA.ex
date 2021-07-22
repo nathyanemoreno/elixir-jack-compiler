@@ -22,16 +22,16 @@ defmodule TermNDFA do
             cond do
               keywordConstant["finished"]-> checkToken(stream, keywordConstant["xml"], keywordConstant["index"], 100)
               true ->
-                # * Verify if is VarName
-                varName = VarNameNDFA.checkToken(stream, "", index)
+                subroutineCall = SubroutineCallNDFA.checkToken(stream, "", index)
 
                 cond do
-                  varName["finished"] -> checkToken(stream, varName["xml"], varName["index"], 10)
+                  subroutineCall["finished"] -> checkToken(stream, subroutineCall["xml"], subroutineCall["index"], 100)
                   true ->
-                    subroutineCall = SubroutineCallNDFA.checkToken(stream, "", index)
+                    # * Verify if is VarName
+                    varName = VarNameNDFA.checkToken(stream, "", index)
 
                     cond do
-                      subroutineCall["finished"] -> checkToken(stream, subroutineCall["xml"], subroutineCall["index"], 100)
+                      varName["finished"] -> checkToken(stream, varName["xml"], varName["index"], 10)
                       true ->
                         unaryOperator = UnaryOperatorNDFA.checkToken(stream, "", index)
 

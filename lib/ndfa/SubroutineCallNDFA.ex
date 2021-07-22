@@ -29,7 +29,7 @@ defmodule SubroutineCallNDFA do
         end
       3 ->
         cond do
-          tokenType == :symbol and token == ")" -> checkToken(stream, xml_carry, nextIndex, 100)
+          tokenType == :symbol and token == ")" -> checkToken(stream, xml_carry <> "\n<symbol> ) </symbol>", nextIndex, 100)
           true -> %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
       10 ->

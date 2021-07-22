@@ -22,7 +22,7 @@ defmodule SubroutineBodyNDFA do
 
         cond do
           varDec["finished"] ->
-            checkToken(stream, xml_carry <> "\n" <> varDec["xml"] <> varDec["index"], 1)
+            checkToken(stream, xml_carry <> "\n" <> varDec["xml"], varDec["index"], 1)
           true ->
             checkToken(stream, xml_carry, index, 2)
         end

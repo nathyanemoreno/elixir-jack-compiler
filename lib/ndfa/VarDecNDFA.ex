@@ -8,23 +8,25 @@ defmodule VarDecNDFA do
     
     case state do
       0 ->
-        IO.inspect(
-          "Checking token in VarDec ")
+        IO.puts("Checking token in VarDec")
         cond do
           # * If keyword var get next
           tokenType == :keyword and token == "var" ->
-            checkToken(stream, xml_carry, nextIndex, 1)
+            checkToken(stream, "<keyword> var </keyword>", nextIndex, 1)
 
           true ->
-            checkToken(stream, xml_carry, index, nil)
+            IO.puts(">> Exiting VarDecNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
 
       1 ->
         type = TypeNDFA.checkToken(stream, "", index)
 
         case type["finished"] do
-          false -> Syntax.unexpectedToken(token)
-          true -> checkToken(stream, xml_carry, type["index"], 2)
+          true -> checkToken(stream, xml_carry <> "\n" <> type["xml"], type["index"], 2)
+          false ->
+            IO.puts(">> Exiting VarDecNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
 
       2 ->
@@ -33,25 +35,41 @@ defmodule VarDecNDFA do
         cond do
           # * Read again
           varName["finished"] == true ->
-            checkToken(stream, xml_carry, varName["index"], 2)
-
-          # * Case is , read again
-          tokenType == :symbol and token == "," ->
-            checkToken(stream, xml_carry, nextIndex, 1)
-
-          # # * Case is ; read again
-          tokenType == :symbol and token == ";" ->
-            checkToken(stream, xml_carry, nextIndex, 3)
-
+            checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 3)
           true ->
-            checkToken(stream, xml_carry, nextIndex, 2)
+            IO.puts(">> Exiting VarDecNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
         end
-
       3 ->
-        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
+        IO.puts("Checking token in VarDec")
+        cond do
+          # * If keyword var get next
+          tokenType == :symbol and token == "," ->
+            checkToken(stream, xml_carry <> "<symbol> , </symbol>", nextIndex, 4)
 
-      nil ->
-        %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+          true -> checkToken(stream, xml_carry, index, 5)
+        end
+      4 ->
+        varName = VarNameNDFA.checkToken(stream, "", index)
+
+        cond do
+          # * Read again
+          varName["finished"] == true ->
+            checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 3)
+          true -> checkToken(stream, xml_carry, index, 5)
+        end
+      5 ->
+        cond do
+          # * If keyword var get next
+          tokenType == :symbol and token == ";" ->
+            checkToken(stream, xml_carry <> "<symbol> ; </symbol>", nextIndex, 100)
+          true ->
+            IO.puts(">> Exiting VarDecNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+        end
+      100 ->
+        IO.puts(">> Exiting VarDecNDFA (SUCCESS)")
+        %{"finished" => true, "index" => index, "token" => token, "xml" => "<varDec>\n" <> xml_carry <> "\n</varDec>"}
     end
   end
 end

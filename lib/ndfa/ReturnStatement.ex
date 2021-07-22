@@ -18,7 +18,12 @@ defmodule ReturnStatementNDFA do
         end
       1 ->
         expression = ExpressionNDFA.checkToken(stream, "", index)
-        checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 2)
+        case expression["finished"] do
+          true ->
+            checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 2)
+          false ->
+            checkToken(stream, xml_carry, expression["index"], 2)
+        end
       2 ->
         cond do
           # * Go to state 1

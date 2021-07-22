@@ -26,11 +26,14 @@ defmodule TypeNDFA do
             cond do
               className["finished"] ->
                 checkToken(stream, xml_carry <> className["xml"], className["index"], 100)
-              true -> %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+              true ->
+                IO.puts(">> Exiting TypeNDFA (FAILED)")
+                %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
             end
         end
 
       100 ->
+        IO.puts(">> Exiting TypeNDFA (SUCCESS)")
         %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
     end
   end

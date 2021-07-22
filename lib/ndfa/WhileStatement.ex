@@ -11,7 +11,7 @@ defmodule WhileStatementNDFA do
         IO.puts("Checking token WhileStatementNDFA")
         cond do
           # * Go to state 1
-          tokenType == :keyword and token == "if" -> checkToken(stream, "<keyword> while </keyword>", nextIndex, 1)
+          tokenType == :keyword and token == "while" -> checkToken(stream, "<keyword> while </keyword>", nextIndex, 1)
           true ->
             IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
@@ -21,7 +21,7 @@ defmodule WhileStatementNDFA do
         cond do
           tokenType == :symbol and token == "(" ->
             # * If find ( look for expression
-            checkToken(stream, xml_carry, nextIndex <> "\n<symbol> ( </symbol>", 2)
+            checkToken(stream, xml_carry <> "\n<symbol> ( </symbol>", nextIndex, 2)
           true ->
             IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "xml" => ""}

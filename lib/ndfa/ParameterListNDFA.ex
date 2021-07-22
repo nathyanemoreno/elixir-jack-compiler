@@ -11,7 +11,7 @@ defmodule ParameterListNDFA do
         IO.inspect("Checking token in ParameterList ")
         type = TypeNDFA.checkToken(stream, "", index)
         cond do
-          type["finished"] -> checkToken(stream, type["xml"], type["index"], 1)
+          type["finished"] -> checkToken(stream, "\n" <> type["xml"], type["index"], 1)
           true ->
             checkToken(stream, xml_carry, index, 100)
         end
@@ -43,7 +43,7 @@ defmodule ParameterListNDFA do
             checkToken(stream, xml_carry, index, 100)
         end
       100 ->
-        %{"finished" => true, "index" => index, "token" => token, "xml" => "<parameterList>\n" <> xml_carry <> "\n</parameterList>"}
+        %{"finished" => true, "index" => index, "token" => token, "xml" => "<parameterList>" <> xml_carry <> "\n</parameterList>"}
     end
   end
 end

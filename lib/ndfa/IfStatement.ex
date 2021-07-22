@@ -42,7 +42,7 @@ defmodule IfStatementNDFA do
       3 ->
         cond do
           tokenType == :symbol and token == ")" ->
-            checkToken(stream, xml_carry <> "\n<symbol> } </symbol>", nextIndex, 4)
+            checkToken(stream, xml_carry <> "\n<symbol> ) </symbol>", nextIndex, 4)
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "xml" => ""}

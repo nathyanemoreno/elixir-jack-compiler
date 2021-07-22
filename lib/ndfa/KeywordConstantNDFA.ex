@@ -10,10 +10,10 @@ defmodule KeywordConstantNDFA do
         IO.inspect(
           "Checking token KeywordConstant")
         cond do
-          tokenType == :keyword and token == "true" -> checkToken(stream, xml_carry, nextIndex, 100)
-          tokenType == :keyword and token == "false" -> checkToken(stream, xml_carry, nextIndex, 100)
-          tokenType == :keyword and token == "null" -> checkToken(stream, xml_carry, nextIndex, 100)
-          tokenType == :keyword and token == "this" -> checkToken(stream, xml_carry, nextIndex, 100)
+          tokenType == :keyword and token == "true" -> checkToken(stream, "<keyword> true </keyword>", nextIndex, 100)
+          tokenType == :keyword and token == "false" -> checkToken(stream, "<keyword> false </keyword>", nextIndex, 100)
+          tokenType == :keyword and token == "null" -> checkToken(stream, "<keyword> null </keyword>", nextIndex, 100)
+          tokenType == :keyword and token == "this" -> checkToken(stream, "<keyword> this </keyword>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting KeywordConstantNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
