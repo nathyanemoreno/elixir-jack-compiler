@@ -2,9 +2,9 @@ defmodule StatementsNDFA do
   def checkToken(stream, xml_carry, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
-    tokenType = tokenObj["type"]
-    nextIndex = tokenObj["index"]
-    
+    # tokenType = tokenObj["type"]
+    # nextIndex = tokenObj["index"]
+
     case tokenState do
       0 ->
         IO.inspect("Checking token Statements")
