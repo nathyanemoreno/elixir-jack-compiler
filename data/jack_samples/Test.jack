@@ -4,22 +4,12 @@ class Square {
 
       /** Constructs a new square with a given location and size. */
       constructor Square new(int Ax, int Ay, int Asize) {
-            // var int name, int age;
-            // var string prize;
-            // let [1] = Ax;
-            // let [y] = Ay;
-            // let [true] = Ay;
-            
             let varname [1] = Ay;
             let name = Ax;
             if (size > 2) {
 
             } else {
-                  
+                 asdashk 
             }
-            
-            // let size = Asize;
-            // do draw();
-            // return this;
       }
 }

@@ -1,26 +1,43 @@
 defmodule Syntaxer do
   def start(fileIn) do
-    stream = File.read!(fileIn)
-    syntaxResult = SyntaxerNDFA.checkToken(stream, "")
+    try do
+      # * Create fileOut with fileIn basename
+      filePath = "build/xml/syntax/" <> Path.basename(fileIn, ".jack") <> ".xml"
 
-    if(File.exists?(fileIn)) do
-      File.open!(fileIn)
-      # Create fileOut with fileIn basename
-      fileOut = "build/xml/syntax/" <> Path.basename(fileIn, ".jack") <> ".xml"
-      if(File.exists?(fileOut), do: File.rm!(fileOut), else: File.write!(fileOut, ""))
+      case File.read(fileIn) do
+        {:ok, stream} ->
+          case SyntaxerNDFA.checkToken(stream, "") do
+            {:ok, syntaxResult} ->
+              # * Write xml tags on fileOut
+              fileOut = Xmler.run(:syntaxer, filePath, syntaxResult)
+              Syntax.success("Compilation of file #{fileIn} to #{fileOut}")
 
-      # Write xml
-      xmler(fileOut, syntaxResult)
+            {:error, token} ->
+              Syntax.unexpectedToken(token)
+          end
 
+        {:error, :enoent} ->
+          Syntax.error("Unable to read #{fileIn}")
+      end
+    after
       File.close(fileIn)
-      File.close(fileOut)
-    else
-      IO.puts(IO.ANSI.format(IO.ANSI.red() <> "\nFile #{fileIn} not found." <> IO.ANSI.reset()))
-      {:error, "File not found."}
     end
   end
 
-  def xmler(fileOut, string) do
-    File.write!(fileOut, string)
+  def start(fileIn, filePath) do
+    try do
+      case File.read(fileIn) do
+        {:ok, stream} ->
+          {:ok, syntaxResult} = SyntaxerNDFA.checkToken(stream, "")
+          # * Write xml tags on fileOut
+          fileOut = Xmler.run(:syntaxer, filePath, syntaxResult)
+          Syntax.success("Compilation of file #{fileIn} to #{fileOut}")
+
+        {:error, :enoent} ->
+          Syntax.error("Unable to read #{fileIn}")
+      end
+    after
+      File.close(fileIn)
+    end
   end
 end
