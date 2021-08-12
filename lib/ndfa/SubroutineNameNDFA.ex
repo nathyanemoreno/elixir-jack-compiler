@@ -1,5 +1,5 @@
 defmodule SubroutineNameNDFA do
-  def checkToken(stream, xml_carry, index, state \\ 0) do
+  def checkToken(stream, index, state \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     tokenType = tokenObj["type"]
     token = tokenObj["token"]
@@ -10,7 +10,7 @@ defmodule SubroutineNameNDFA do
         IO.puts("Checking token in SubroutineNameNDFA")
         cond do
           # * If identifier get next
-          tokenType == :identifier -> checkToken(stream, "<identifier> " <> token <> " </identifier>", nextIndex, 100)
+          tokenType == :identifier -> checkToken(stream, nextIndex, 100)
           true ->
             IO.puts(">> Exiting SubroutineNameNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token}

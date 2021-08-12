@@ -1,5 +1,5 @@
 defmodule ClassNameNDFA do
-  def checkToken(stream, xml_carry, index, state \\ 0) do
+  def checkToken(stream, index, state \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     tokenType = tokenObj["type"]
     token = tokenObj["token"]
@@ -10,15 +10,15 @@ defmodule ClassNameNDFA do
       0 ->
         IO.inspect("Checking token in ClassName " <> "--------------------> " <> tokenObj["token"])
         case tokenType do
-          :identifier -> checkToken(stream, "<identifier> " <> token <> " </identifier>", nextIndex, 100)
+          :identifier -> checkToken(stream, nextIndex, 100)
           _ ->
             IO.puts(">> Exiting ClassNameNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->
         IO.puts(">> Exiting ClassNameNDFA (SUCCESS)")
-        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
+        %{"finished" => true, "index" => index, "token" => token}
     end
   end
 end

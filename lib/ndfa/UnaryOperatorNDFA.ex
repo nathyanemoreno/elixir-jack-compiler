@@ -1,5 +1,5 @@
 defmodule UnaryOperatorNDFA do
-  def checkToken(stream, xml_carry, index \\ 0, tokenState \\ 0) do
+  def checkToken(stream, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
@@ -15,10 +15,10 @@ defmodule UnaryOperatorNDFA do
           tokenType == :symbol ->
             case token do
               "-" ->
-                checkToken(stream, "<symbol> - </symbol>", nextIndex, 100)
+                checkToken(stream, nextIndex, 100)
 
               "~" ->
-                checkToken(stream, "<symbol> ~ </symbol>", nextIndex, 100)
+                checkToken(stream, nextIndex, 100)
 
               _ ->
                 IO.puts(">> Exiting UnaryOperatorNDFA (FAILED)")

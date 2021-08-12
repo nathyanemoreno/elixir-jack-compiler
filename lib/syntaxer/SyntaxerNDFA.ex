@@ -23,7 +23,7 @@ defmodule SyntaxerNDFA do
         end
 
       1 ->
-        className = ClassNameNDFA.checkToken(stream, "", index)
+        className = ClassNameNDFA.checkToken(stream, index)
 
         case className["finished"] do
           true ->
@@ -44,7 +44,7 @@ defmodule SyntaxerNDFA do
         end
 
       3 ->
-        classVarDec = ClassVarDecNDFA.checkToken(stream, "", index)
+        classVarDec = ClassVarDecNDFA.checkToken(stream, index)
 
         case classVarDec["finished"] do
           true ->
@@ -64,7 +64,7 @@ defmodule SyntaxerNDFA do
             )
 
           true ->
-            subroutineDec = SubroutineDecNDFA.checkToken(stream, "", index)
+            subroutineDec = SubroutineDecNDFA.checkToken(stream, index)
 
             case subroutineDec["finished"] do
               true ->
@@ -80,7 +80,7 @@ defmodule SyntaxerNDFA do
         end
 
       100 ->
-        {:ok, "Okay"}
+        {:ok, :no_error}
     end
   end
 end

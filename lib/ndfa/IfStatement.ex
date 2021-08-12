@@ -1,5 +1,5 @@
 defmodule IfStatementNDFA do
-  def checkToken(stream, xml_carry, index \\ 0, tokenState \\ 0) do
+  def checkToken(stream, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
@@ -12,7 +12,7 @@ defmodule IfStatementNDFA do
         cond do
           # * Go to state 1
           tokenType == :keyword and token == "if" ->
-            checkToken(stream, "<keyword> if </keyword>", nextIndex, 1)
+            checkToken(stream, nextIndex, 1)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -23,7 +23,7 @@ defmodule IfStatementNDFA do
         cond do
           tokenType == :symbol and token == "(" ->
             # * If find ( look for expression
-            checkToken(stream, xml_carry <> "\n<symbol> ( </symbol>", nextIndex, 2)
+            checkToken(stream, nextIndex, 2)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -31,11 +31,11 @@ defmodule IfStatementNDFA do
         end
 
       2 ->
-        expression = ExpressionNDFA.checkToken(stream, "", index)
+        expression = ExpressionNDFA.checkToken(stream, index)
 
         cond do
           expression["finished"] ->
-            checkToken(stream, xml_carry , expression["index"], 3)
+            checkToken(stream, expression["index"], 3)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -45,7 +45,7 @@ defmodule IfStatementNDFA do
       3 ->
         cond do
           tokenType == :symbol and token == ")" ->
-            checkToken(stream, xml_carry <> "\n<symbol> ) </symbol>", nextIndex, 4)
+            checkToken(stream, nextIndex, 4)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -56,7 +56,7 @@ defmodule IfStatementNDFA do
         cond do
           tokenType == :symbol and token == "{" ->
             # * If find ( look for expression
-            checkToken(stream, xml_carry <> "\n<symbol> { </symbol>", nextIndex, 5)
+            checkToken(stream, nextIndex, 5)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -64,7 +64,7 @@ defmodule IfStatementNDFA do
         end
 
       5 ->
-        statements = StatementsNDFA.checkToken(stream, "", index)
+        statements = StatementsNDFA.checkToken(stream, index)
 
         case statements["finished"] do
           false ->
@@ -72,13 +72,13 @@ defmodule IfStatementNDFA do
             %{"finished" => false, "index" => index, "token" => token}
 
           true ->
-            checkToken(stream, xml_carry , statements["index"], 6)
+            checkToken(stream, statements["index"], 6)
         end
 
       6 ->
         cond do
           tokenType == :symbol and token == "}" ->
-            checkToken(stream, xml_carry <> "\n<symbol> } </symbol>", nextIndex, 7)
+            checkToken(stream, nextIndex, 7)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -88,16 +88,16 @@ defmodule IfStatementNDFA do
       7 ->
         cond do
           tokenType == :keyword and token == "else" ->
-            checkToken(stream, xml_carry <> "\n<keyword> else </keyword>", nextIndex, 8)
+            checkToken(stream, nextIndex, 8)
 
           true ->
-            checkToken(stream, xml_carry, index, 100)
+            checkToken(stream, index, 100)
         end
 
       8 ->
         cond do
           tokenType == :symbol and token == "{" ->
-            checkToken(stream, xml_carry <> "\n<symbol> { </symbol>", nextIndex, 9)
+            checkToken(stream, nextIndex, 9)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -105,7 +105,7 @@ defmodule IfStatementNDFA do
         end
 
       9 ->
-        statements = StatementsNDFA.checkToken(stream, "", index)
+        statements = StatementsNDFA.checkToken(stream, index)
 
         case statements["finished"] do
           false ->
@@ -113,13 +113,13 @@ defmodule IfStatementNDFA do
             %{"finished" => false, "index" => index, "token" => token}
 
           true ->
-            checkToken(stream, xml_carry , statements["index"], 10)
+            checkToken(stream, statements["index"], 10)
         end
 
       10 ->
         cond do
           tokenType == :symbol and token == "}" ->
-            checkToken(stream, xml_carry <> "\n<symbol> } </symbol>", nextIndex, 100)
+            checkToken(stream, nextIndex, 100)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -133,7 +133,7 @@ defmodule IfStatementNDFA do
           "finished" => true,
           "index" => index,
           "token" => token,
-          "xml" => "<ifStatement>\n" <> xml_carry <> "\n</ifStatement>"
+
         }
     end
   end

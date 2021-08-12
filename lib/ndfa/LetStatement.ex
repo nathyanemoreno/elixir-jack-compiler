@@ -1,5 +1,5 @@
 defmodule LetStatementNDFA do
-  def checkToken(stream, xml_carry, index \\ 0, tokenState \\ 0) do
+  def checkToken(stream, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
@@ -10,33 +10,33 @@ defmodule LetStatementNDFA do
         IO.inspect("Checking token LetStatement")
         cond do
           # * Go to state 1
-          tokenType == :keyword and token == "let" -> checkToken(stream, "<keyword> let </keyword>", nextIndex, 1)
+          tokenType == :keyword and token == "let" -> checkToken(stream, nextIndex, 1)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token}
         end
 
       1 ->
-        varName = VarNameNDFA.checkToken(stream, "", index)
+        varName = VarNameNDFA.checkToken(stream, index)
 
         cond do
           varName["finished"] ->
-            checkToken(stream, xml_carry , varName["index"], 2)
+            checkToken(stream, varName["index"], 2)
           true ->
             %{"finished" => false, "index" => index, "token" => token}
         end
 
       2 ->
         cond do
-          tokenType == :symbol and token == "[" -> checkToken(stream, xml_carry <> "\n<symbol> [ </symbol>", nextIndex, 3)
-          true -> checkToken(stream, xml_carry, index, 10)
+          tokenType == :symbol and token == "[" -> checkToken(stream, nextIndex, 3)
+          true -> checkToken(stream, index, 10)
         end
 
       3 ->
-        expression = ExpressionNDFA.checkToken(stream, "", index)
+        expression = ExpressionNDFA.checkToken(stream, index)
 
         cond do
-          expression["finished"] -> checkToken(stream, xml_carry , expression["index"], 4)
+          expression["finished"] -> checkToken(stream, expression["index"], 4)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token}
@@ -44,7 +44,7 @@ defmodule LetStatementNDFA do
 
       4 ->
         cond do
-          tokenType == :symbol and token == "]" -> checkToken(stream, xml_carry <> "\n<symbol> ] </symbol>", nextIndex, 10)
+          tokenType == :symbol and token == "]" -> checkToken(stream, nextIndex, 10)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token}
@@ -52,17 +52,17 @@ defmodule LetStatementNDFA do
 
       10 ->
         cond do
-          tokenType == :symbol and token == "=" -> checkToken(stream, xml_carry <> "\n<symbol> = </symbol>", nextIndex, 11)
+          tokenType == :symbol and token == "=" -> checkToken(stream, nextIndex, 11)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token}
         end
 
       11 ->
-        expression = ExpressionNDFA.checkToken(stream, "", index)
+        expression = ExpressionNDFA.checkToken(stream, index)
 
         cond do
-          expression["finished"] -> checkToken(stream, xml_carry , expression["index"], 12)
+          expression["finished"] -> checkToken(stream, expression["index"], 12)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token}
@@ -70,7 +70,7 @@ defmodule LetStatementNDFA do
 
       12 ->
         cond do
-          tokenType == :symbol and token == ";" -> checkToken(stream, xml_carry <> "\n<symbol> ; </symbol>", nextIndex, 100)
+          tokenType == :symbol and token == ";" -> checkToken(stream, nextIndex, 100)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token}
@@ -78,7 +78,7 @@ defmodule LetStatementNDFA do
 
       100 ->
         IO.puts(">> Exiting LetStatementNDFA (SUCCESS)")
-        %{"finished" => true, "index" => index, "token" => token, "xml" => "<letStatement>\n" <> xml_carry <> "\n</letStatement>"}
+        %{"finished" => true, "index" => index, "token" => token}
     end
   end
 end
