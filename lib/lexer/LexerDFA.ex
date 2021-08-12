@@ -5,7 +5,7 @@ defmodule LexerDFA do
     <<utf8Char::utf8>> = char
     nCharIndex = cCharIndex + 1
 
-    # IO.inspect(Integer.to_string(cCharIndex) <> " - " <> carry)
+    # Integer.to_string(cCharIndex) <> " - " <> carry)
 
     case cState do
       0 ->
