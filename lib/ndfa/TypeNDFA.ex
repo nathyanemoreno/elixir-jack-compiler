@@ -8,7 +8,7 @@ defmodule TypeNDFA do
     case state do
       # Read: keyword
       0 ->
-        IO.inspect("Checking token in Type")
+
 
         cond do
           tokenType == :keyword and token == "int" ->
@@ -27,13 +27,13 @@ defmodule TypeNDFA do
               className["finished"] ->
                 checkToken(stream, className["index"], 100)
               true ->
-                IO.puts(">> Exiting TypeNDFA (FAILED)")
+
                 %{"finished" => false, "index" => index, "token" => token}
             end
         end
 
       100 ->
-        IO.puts(">> Exiting TypeNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

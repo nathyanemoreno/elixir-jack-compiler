@@ -8,7 +8,7 @@ defmodule StatementNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect("Checking token Statement")
+
         letStatement = LetStatementNDFA.checkToken(stream, index)
 
         cond do
@@ -30,7 +30,7 @@ defmodule StatementNDFA do
                         cond do
                           returnStatement["finished"] -> checkToken(stream,returnStatement["index"], 100)
                           true ->
-                            IO.puts(">> Exiting StatementNDFA (FAILED)")
+
                             %{"finished" => false, "index" => index, "token" => token}
                         end
                     end
@@ -38,7 +38,7 @@ defmodule StatementNDFA do
             end
         end
       100 ->
-        IO.puts(">> Exiting StatementNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

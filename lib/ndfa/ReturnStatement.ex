@@ -8,12 +8,12 @@ defmodule ReturnStatementNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect("Checking token ReturnStatement")
+
         cond do
           # * Go to state 1
           tokenType == :keyword and token == "return" -> checkToken(stream, nextIndex, 1)
           true ->
-            IO.puts(">> Exiting ReturnStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       1 ->
@@ -29,11 +29,11 @@ defmodule ReturnStatementNDFA do
           # * Go to state 1
           tokenType == :symbol and token == ";" -> checkToken(stream, nextIndex, 100)
           true ->
-            IO.puts(">> Exiting ReturnStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       100 ->
-        IO.puts(">> Exiting ReturnStatementNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

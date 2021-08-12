@@ -8,8 +8,6 @@ defmodule SubroutineCallNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect(
-          "Checking token SubroutineCall")
         subroutineName = SubroutineNameNDFA.checkToken(stream, index);
         cond do
           subroutineName["finished"] -> checkToken(stream,subroutineName["index"], 1)

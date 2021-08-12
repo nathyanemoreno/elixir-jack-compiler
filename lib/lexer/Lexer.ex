@@ -37,7 +37,6 @@ defmodule Lexer do
     tokenObj = stream |> Token.getToken(initialIndex)
     cond do
       tokenObj != nil ->
-        IO.puts("Peek ---> " <> tokenObj["token"])
         tokenObj
       true -> tokenObj
     end

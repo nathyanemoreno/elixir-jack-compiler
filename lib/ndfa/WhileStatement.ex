@@ -8,12 +8,12 @@ defmodule WhileStatementNDFA do
 
     case tokenState do
       0 ->
-        IO.puts("Checking token WhileStatementNDFA")
+
         cond do
           # * Go to state 1
           tokenType == :keyword and token == "while" -> checkToken(stream, nextIndex, 1)
           true ->
-            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -23,7 +23,7 @@ defmodule WhileStatementNDFA do
             # * If find ( look for expression
             checkToken(stream, nextIndex, 2)
           true ->
-            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -34,7 +34,7 @@ defmodule WhileStatementNDFA do
           expression["finished"] ->
             checkToken(stream, expression["index"], 3)
           true ->
-            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -43,7 +43,7 @@ defmodule WhileStatementNDFA do
           tokenType == :symbol and token == ")" ->
             checkToken(stream, nextIndex, 4)
           true ->
-            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       4 ->
@@ -52,7 +52,7 @@ defmodule WhileStatementNDFA do
             # * If find ( look for expression
             checkToken(stream, nextIndex, 5)
           true ->
-            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -61,7 +61,7 @@ defmodule WhileStatementNDFA do
 
         case statements["finished"] do
           false ->
-            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
           true ->
             checkToken(stream, statements["index"], 6)
@@ -72,12 +72,12 @@ defmodule WhileStatementNDFA do
           tokenType == :symbol and token == "}" ->
             checkToken(stream, nextIndex, 100)
           true ->
-            IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->
-        IO.puts(">> Exiting WhileStatementNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

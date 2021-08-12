@@ -4,11 +4,11 @@ defmodule ParameterListNDFA do
     tokenType = tokenObj["type"]
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
-    # IO.inspect(tokenObj)
+    #
 
     case state do
       0 ->
-        IO.inspect("Checking token in ParameterList ")
+
         type = TypeNDFA.checkToken(stream, index)
         cond do
           type["finished"] -> checkToken(stream, type["index"], 1)

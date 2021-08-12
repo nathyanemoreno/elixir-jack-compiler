@@ -5,30 +5,38 @@ defmodule ExpressionListNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-
     case tokenState do
       0 ->
-        IO.inspect(
-          "Checking token ExpressionListNDFA")
         expression = ExpressionNDFA.checkToken(stream, index)
+
         cond do
-          expression["finished"] -> checkToken(stream, expression["index"], 1)
+          expression["finished"] ->
+            checkToken(stream, expression["index"], 1)
+
           true ->
             checkToken(stream, index, 100)
         end
+
       1 ->
         cond do
           tokenType == :symbol and token == "," ->
             checkToken(stream, nextIndex, 2)
-          true -> checkToken(stream, index, 100)
-        end
-      2 ->
-        expression = ExpressionNDFA.checkToken(stream, index)
-        cond do
-          expression["finished"] -> checkToken(stream, expression["index"], 1)
+
           true ->
             checkToken(stream, index, 100)
         end
+
+      2 ->
+        expression = ExpressionNDFA.checkToken(stream, index)
+
+        cond do
+          expression["finished"] ->
+            checkToken(stream, expression["index"], 1)
+
+          true ->
+            checkToken(stream, index, 100)
+        end
+
       100 ->
         %{"finished" => true, "index" => index, "token" => token}
     end

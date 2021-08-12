@@ -8,8 +8,6 @@ defmodule TermNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect(
-          "Checking token TermNDFA")
         cond do
           # * Go to state 1
           tokenType == :integerConstant -> checkToken(stream, nextIndex, 100)
@@ -38,7 +36,7 @@ defmodule TermNDFA do
                         cond do
                           unaryOperator["finished"] -> checkToken(stream,unaryOperator["index"], 20)
                           true ->
-                            IO.puts(">> Exiting TermNDFA (FAILED)")
+
                             %{"finished" => false, "index" => index, "token" => token}
                         end
                       end
@@ -51,14 +49,14 @@ defmodule TermNDFA do
         cond do
           expression["finished"] -> checkToken(stream, expression["index"], 2)
           true ->
-            IO.puts(">> Exiting TermNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       2 ->
         cond do
           tokenType == :symbol and token == ")" -> checkToken(stream, nextIndex, 100)
           true ->
-            IO.puts(">> Exiting TermNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       10 ->
@@ -72,14 +70,14 @@ defmodule TermNDFA do
         cond do
           expression["finished"] -> checkToken(stream, expression["index"], 12)
           true ->
-            IO.puts(">> Exiting TermNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       12 ->
         cond do
           tokenType == :symbol and token == "]" -> checkToken(stream, nextIndex, 100)
           true ->
-            IO.puts(">> Exiting TermNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       20 ->
@@ -88,11 +86,11 @@ defmodule TermNDFA do
         cond do
           term["finished"] -> checkToken(stream, term["index"], 100)
           true ->
-            IO.puts(">> Exiting TermNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       100 ->
-        IO.puts(">> Exiting TermNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

@@ -9,7 +9,7 @@ defmodule SubroutineDecNDFA do
     case state do
       # Read: keyword
       0 ->
-        IO.puts("Checking token in SubroutineDec")
+
         cond do
           tokenType == :keyword and
               (token == "constructor" or token == "function" or token == "method") ->

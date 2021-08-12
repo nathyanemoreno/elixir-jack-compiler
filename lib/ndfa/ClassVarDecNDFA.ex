@@ -4,12 +4,12 @@ defmodule ClassVarDecNDFA do
     tokenType = tokenObj["type"]
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
-    # IO.inspect(tokenObj)
+    #
 
     case state do
       # * Read: keyword
       0 ->
-        IO.inspect("Checking token in ClassVarDec")
+
 
         cond do
           # * If token is "field" or "static" got to state 1
@@ -18,7 +18,7 @@ defmodule ClassVarDecNDFA do
 
           # * Go to nil to go to subroutine
           true ->
-            IO.puts(">> Exiting ClassVarDecNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -28,7 +28,7 @@ defmodule ClassVarDecNDFA do
 
         case type["finished"] do
           false ->
-            IO.puts(">> Exiting ClassVarDecNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
 
           true ->
@@ -41,7 +41,7 @@ defmodule ClassVarDecNDFA do
 
         case varName["finished"] do
           false ->
-            IO.puts(">> Exiting ClassVarDecNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
 
           true ->
@@ -57,7 +57,7 @@ defmodule ClassVarDecNDFA do
             checkToken(stream, nextIndex, 100)
 
           true ->
-            IO.puts(">> Exiting ClassVarDecNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -66,7 +66,7 @@ defmodule ClassVarDecNDFA do
         checkToken(stream, varName["index"], 3)
 
       100 ->
-        IO.puts(">> Exiting ClassVarDecNDFA (SUCCESS)")
+
 
         %{
           "finished" => true,

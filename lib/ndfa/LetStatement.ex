@@ -7,12 +7,12 @@ defmodule LetStatementNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect("Checking token LetStatement")
+
         cond do
           # * Go to state 1
           tokenType == :keyword and token == "let" -> checkToken(stream, nextIndex, 1)
           true ->
-            IO.puts(">> Exiting LetStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -38,7 +38,7 @@ defmodule LetStatementNDFA do
         cond do
           expression["finished"] -> checkToken(stream, expression["index"], 4)
           true ->
-            IO.puts(">> Exiting LetStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -46,7 +46,7 @@ defmodule LetStatementNDFA do
         cond do
           tokenType == :symbol and token == "]" -> checkToken(stream, nextIndex, 10)
           true ->
-            IO.puts(">> Exiting LetStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -54,7 +54,7 @@ defmodule LetStatementNDFA do
         cond do
           tokenType == :symbol and token == "=" -> checkToken(stream, nextIndex, 11)
           true ->
-            IO.puts(">> Exiting LetStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -64,7 +64,7 @@ defmodule LetStatementNDFA do
         cond do
           expression["finished"] -> checkToken(stream, expression["index"], 12)
           true ->
-            IO.puts(">> Exiting LetStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -72,12 +72,12 @@ defmodule LetStatementNDFA do
         cond do
           tokenType == :symbol and token == ";" -> checkToken(stream, nextIndex, 100)
           true ->
-            IO.puts(">> Exiting LetStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->
-        IO.puts(">> Exiting LetStatementNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

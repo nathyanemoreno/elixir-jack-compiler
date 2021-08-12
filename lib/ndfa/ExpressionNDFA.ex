@@ -6,12 +6,12 @@ defmodule ExpressionNDFA do
 
     case tokenState do
       0 ->
-        IO.puts("Checking token Expression")
+
         term = TermNDFA.checkToken(stream, index)
         cond do
           term["finished"] -> checkToken(stream,term["index"], 1)
           true ->
-            IO.puts(">> Exiting ExpressionNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       1 ->
@@ -27,7 +27,7 @@ defmodule ExpressionNDFA do
           true -> checkToken(stream, index, 100)
         end
       100 ->
-        IO.puts(">> Exiting ExpressionNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

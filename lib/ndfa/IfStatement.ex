@@ -7,7 +7,7 @@ defmodule IfStatementNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect("Checking token IfStatement")
+
 
         cond do
           # * Go to state 1
@@ -15,7 +15,7 @@ defmodule IfStatementNDFA do
             checkToken(stream, nextIndex, 1)
 
           true ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -26,7 +26,7 @@ defmodule IfStatementNDFA do
             checkToken(stream, nextIndex, 2)
 
           true ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -38,7 +38,7 @@ defmodule IfStatementNDFA do
             checkToken(stream, expression["index"], 3)
 
           true ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -48,7 +48,7 @@ defmodule IfStatementNDFA do
             checkToken(stream, nextIndex, 4)
 
           true ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -59,7 +59,7 @@ defmodule IfStatementNDFA do
             checkToken(stream, nextIndex, 5)
 
           true ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -68,7 +68,7 @@ defmodule IfStatementNDFA do
 
         case statements["finished"] do
           false ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
 
           true ->
@@ -81,7 +81,7 @@ defmodule IfStatementNDFA do
             checkToken(stream, nextIndex, 7)
 
           true ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -100,7 +100,7 @@ defmodule IfStatementNDFA do
             checkToken(stream, nextIndex, 9)
 
           true ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -109,7 +109,7 @@ defmodule IfStatementNDFA do
 
         case statements["finished"] do
           false ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
 
           true ->
@@ -122,12 +122,12 @@ defmodule IfStatementNDFA do
             checkToken(stream, nextIndex, 100)
 
           true ->
-            IO.puts(">> Exiting IfStatementNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->
-        IO.puts(">> Exiting IfStatementNDFA (SUCCESS)")
+
 
         %{
           "finished" => true,

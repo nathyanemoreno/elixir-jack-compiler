@@ -8,8 +8,6 @@ defmodule OperatorNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect(
-          "Checking token Operator")
         cond do
           # * Go to state 100
           tokenType == :symbol ->
@@ -42,17 +40,17 @@ defmodule OperatorNDFA do
                 checkToken(stream, nextIndex, 100)
 
               _ ->
-                IO.puts(">> Exiting OperatorNDFA (FAILED)")
+
                 %{"finished" => false, "index" => index, "token" => token}
             end
 
           true ->
-            IO.puts(">> Exiting OperatorNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->
-        IO.puts(">> Exiting OperatorNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

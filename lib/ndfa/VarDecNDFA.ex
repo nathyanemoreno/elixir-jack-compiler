@@ -4,18 +4,18 @@ defmodule VarDecNDFA do
     tokenType = tokenObj["type"]
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
-    # IO.inspect(tokenObj)
+    #
 
     case state do
       0 ->
-        IO.puts("Checking token in VarDec")
+
         cond do
           # * If keyword var get next
           tokenType == :keyword and token == "var" ->
             checkToken(stream, nextIndex, 1)
 
           true ->
-            IO.puts(">> Exiting VarDecNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -25,7 +25,7 @@ defmodule VarDecNDFA do
         case type["finished"] do
           true -> checkToken(stream, type["index"], 2)
           false ->
-            IO.puts(">> Exiting VarDecNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
 
@@ -37,11 +37,11 @@ defmodule VarDecNDFA do
           varName["finished"] == true ->
             checkToken(stream, varName["index"], 3)
           true ->
-            IO.puts(">> Exiting VarDecNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       3 ->
-        IO.puts("Checking token in VarDec")
+
         cond do
           # * If keyword var get next
           tokenType == :symbol and token == "," ->
@@ -64,11 +64,11 @@ defmodule VarDecNDFA do
           tokenType == :symbol and token == ";" ->
             checkToken(stream, nextIndex, 100)
           true ->
-            IO.puts(">> Exiting VarDecNDFA (FAILED)")
+
             %{"finished" => false, "index" => index, "token" => token}
         end
       100 ->
-        IO.puts(">> Exiting VarDecNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end

@@ -7,7 +7,7 @@ defmodule StatementsNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect("Checking token Statements")
+
         # * Go to state 100
         statement = StatementNDFA.checkToken(stream, index)
 
@@ -17,7 +17,7 @@ defmodule StatementsNDFA do
         end
 
       100 ->
-        IO.puts(">> Exiting StatementsNDFA (SUCCESS)")
+
         %{"finished" => true, "index" => index, "token" => token}
     end
   end
