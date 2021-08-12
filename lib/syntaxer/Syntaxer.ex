@@ -21,6 +21,7 @@ defmodule Syntaxer do
       end
     after
       File.close(fileIn)
+      {:ok, :no_error}
     end
   end
 
@@ -38,6 +39,7 @@ defmodule Syntaxer do
       end
     after
       File.close(fileIn)
+      {:ok, :no_error}
     end
   end
 end

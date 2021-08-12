@@ -34,11 +34,11 @@ defmodule ElixirJackCompiler.CLI do
   end
 
   defp run({:start, fileIn, fileOut}) do
-    Syntaxer.start(fileIn, fileOut)
+    Compiler.start(fileIn, fileOut)
   end
 
   defp run({:start, fileIn}) do
-    Syntaxer.start(fileIn)
+    Compiler.start(fileIn)
   end
 
   defp run(:help) do
