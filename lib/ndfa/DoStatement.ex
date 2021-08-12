@@ -5,7 +5,7 @@ defmodule DoStatementNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    
+
     case tokenState do
       0 ->
         IO.inspect("Checking token DoStatementNDFA")
@@ -14,16 +14,16 @@ defmodule DoStatementNDFA do
           tokenType == :keyword and token == "do" -> checkToken(stream, "<keyword> do </keyword>", nextIndex, 1)
           true ->
             IO.puts(">> Exiting DoStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       1 ->
         subroutineCall = SubroutineCallNDFA.checkToken(stream, "", index)
 
         case subroutineCall["finished"] do
-          true -> checkToken(stream, xml_carry <> "\n" <> subroutineCall["xml"], subroutineCall["index"], 2)
+          true -> checkToken(stream, xml_carry , subroutineCall["index"], 2)
           false ->
             IO.puts(">> Exiting DoStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       2 ->
         cond do
@@ -31,7 +31,7 @@ defmodule DoStatementNDFA do
           tokenType == :symbol and token == ";" -> checkToken(stream, xml_carry <> "\n<symbol> ; </symbol>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting DoStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       100 ->
         IO.puts(">> Exiting DoStatementNDFA (SUCCESS)")

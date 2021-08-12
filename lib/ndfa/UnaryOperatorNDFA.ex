@@ -5,7 +5,7 @@ defmodule UnaryOperatorNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    
+
     case tokenState do
       0 ->
         IO.inspect(
@@ -22,17 +22,17 @@ defmodule UnaryOperatorNDFA do
 
               _ ->
                 IO.puts(">> Exiting UnaryOperatorNDFA (FAILED)")
-                %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+                %{"finished" => false, "index" => index, "token" => token}
             end
 
           true ->
             IO.puts(">> Exiting UnaryOperatorNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->
         IO.puts(">> Exiting UnaryOperatorNDFA (SUCCESS)")
-        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
+        %{"finished" => true, "index" => index, "token" => token}
     end
   end
 end

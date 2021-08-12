@@ -5,7 +5,7 @@ defmodule OperatorNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    
+
     case tokenState do
       0 ->
         IO.inspect(
@@ -43,17 +43,17 @@ defmodule OperatorNDFA do
 
               _ ->
                 IO.puts(">> Exiting OperatorNDFA (FAILED)")
-                %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+                %{"finished" => false, "index" => index, "token" => token}
             end
 
           true ->
             IO.puts(">> Exiting OperatorNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->
         IO.puts(">> Exiting OperatorNDFA (SUCCESS)")
-        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
+        %{"finished" => true, "index" => index, "token" => token}
     end
   end
 end

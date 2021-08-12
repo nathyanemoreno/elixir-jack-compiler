@@ -4,7 +4,7 @@ defmodule KeywordConstantNDFA do
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
-    
+
     case tokenState do
       0 ->
         IO.inspect(
@@ -16,12 +16,12 @@ defmodule KeywordConstantNDFA do
           tokenType == :keyword and token == "this" -> checkToken(stream, "<keyword> this </keyword>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting KeywordConstantNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->
         IO.puts(">> Exiting KeywordConstantNDFA (SUCCESS)")
-        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
+        %{"finished" => true, "index" => index, "token" => token}
     end
   end
 end

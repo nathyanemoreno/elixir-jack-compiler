@@ -5,7 +5,7 @@ defmodule VarDecNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
     # IO.inspect(tokenObj)
-    
+
     case state do
       0 ->
         IO.puts("Checking token in VarDec")
@@ -16,17 +16,17 @@ defmodule VarDecNDFA do
 
           true ->
             IO.puts(">> Exiting VarDecNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       1 ->
         type = TypeNDFA.checkToken(stream, "", index)
 
         case type["finished"] do
-          true -> checkToken(stream, xml_carry <> "\n" <> type["xml"], type["index"], 2)
+          true -> checkToken(stream, xml_carry , type["index"], 2)
           false ->
             IO.puts(">> Exiting VarDecNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       2 ->
@@ -35,10 +35,10 @@ defmodule VarDecNDFA do
         cond do
           # * Read again
           varName["finished"] == true ->
-            checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 3)
+            checkToken(stream, xml_carry , varName["index"], 3)
           true ->
             IO.puts(">> Exiting VarDecNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       3 ->
         IO.puts("Checking token in VarDec")
@@ -55,7 +55,7 @@ defmodule VarDecNDFA do
         cond do
           # * Read again
           varName["finished"] == true ->
-            checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 3)
+            checkToken(stream, xml_carry , varName["index"], 3)
           true -> checkToken(stream, xml_carry, index, 5)
         end
       5 ->
@@ -65,7 +65,7 @@ defmodule VarDecNDFA do
             checkToken(stream, xml_carry <> "<symbol> ; </symbol>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting VarDecNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       100 ->
         IO.puts(">> Exiting VarDecNDFA (SUCCESS)")

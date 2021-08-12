@@ -5,33 +5,33 @@ defmodule StatementNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    
+
     case tokenState do
       0 ->
         IO.inspect("Checking token Statement")
         letStatement = LetStatementNDFA.checkToken(stream, "", index)
-        
+
         cond do
-          letStatement["finished"] -> checkToken(stream, letStatement["xml"], letStatement["index"], 100)
+          letStatement["finished"] -> checkToken(stream,"", letStatement["index"], 100)
           true ->
             ifStatement = IfStatementNDFA.checkToken(stream, "", index)
             cond do
-              ifStatement["finished"] -> checkToken(stream, ifStatement["xml"], ifStatement["index"], 100)
-              true -> 
+              ifStatement["finished"] -> checkToken(stream,"", ifStatement["index"], 100)
+              true ->
                 whileStatement = WhileStatementNDFA.checkToken(stream, "", index)
                 cond do
-                  whileStatement["finished"] -> checkToken(stream, whileStatement["xml"], whileStatement["index"], 100)
-                  true -> 
+                  whileStatement["finished"] -> checkToken(stream,"", whileStatement["index"], 100)
+                  true ->
                     doStatment = DoStatementNDFA.checkToken(stream, "", index)
                     cond do
-                      doStatment["finished"] -> checkToken(stream, doStatment["xml"], doStatment["index"], 100)
-                      true -> 
+                      doStatment["finished"] -> checkToken(stream,"", doStatment["index"], 100)
+                      true ->
                         returnStatement = ReturnStatementNDFA.checkToken(stream, "", index)
                         cond do
-                          returnStatement["finished"] -> checkToken(stream, returnStatement["xml"], returnStatement["index"], 100)
+                          returnStatement["finished"] -> checkToken(stream,"", returnStatement["index"], 100)
                           true ->
                             IO.puts(">> Exiting StatementNDFA (FAILED)")
-                            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+                            %{"finished" => false, "index" => index, "token" => token}
                         end
                     end
                 end
@@ -39,7 +39,7 @@ defmodule StatementNDFA do
         end
       100 ->
         IO.puts(">> Exiting StatementNDFA (SUCCESS)")
-        %{"finished" => true, "index" => index, "token" => token, "xml" => xml_carry}
+        %{"finished" => true, "index" => index, "token" => token}
     end
   end
 end

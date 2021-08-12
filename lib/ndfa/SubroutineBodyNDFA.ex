@@ -5,7 +5,7 @@ defmodule SubroutineBodyNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
     # IO.inspect(tokenObj)
-    
+
     case state do
       0 ->
         IO.inspect("Checking token in SubroutineBody ")
@@ -14,7 +14,7 @@ defmodule SubroutineBodyNDFA do
             checkToken(stream, "<symbol> { </symbol>", nextIndex, 1)
           true ->
             IO.puts(">> Exiting SubroutineBodyNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       1 ->
@@ -22,7 +22,7 @@ defmodule SubroutineBodyNDFA do
 
         cond do
           varDec["finished"] ->
-            checkToken(stream, xml_carry <> "\n" <> varDec["xml"], varDec["index"], 1)
+            checkToken(stream, xml_carry , varDec["index"], 1)
           true ->
             checkToken(stream, xml_carry, index, 2)
         end
@@ -30,17 +30,17 @@ defmodule SubroutineBodyNDFA do
       2 ->
         statementsNDFA = StatementsNDFA.checkToken(stream, "", index)
         cond do
-          statementsNDFA["finished"] -> checkToken(stream, xml_carry <> "\n" <> statementsNDFA["xml"], statementsNDFA["index"], 3)
+          statementsNDFA["finished"] -> checkToken(stream, xml_carry , statementsNDFA["index"], 3)
           true ->
             IO.puts(">> Exiting SubroutineBodyNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       3 ->
         cond do
           tokenType == :symbol and token == "}" -> checkToken(stream, xml_carry <> "\n<symbol> } </symbol>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting SubroutineBodyNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       100 ->
         IO.puts(">> Exiting SubroutineBodyNDFA (SUCCESS)")

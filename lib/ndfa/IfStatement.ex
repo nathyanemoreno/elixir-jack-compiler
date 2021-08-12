@@ -16,7 +16,7 @@ defmodule IfStatementNDFA do
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       1 ->
@@ -27,7 +27,7 @@ defmodule IfStatementNDFA do
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       2 ->
@@ -35,11 +35,11 @@ defmodule IfStatementNDFA do
 
         cond do
           expression["finished"] ->
-            checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 3)
+            checkToken(stream, xml_carry , expression["index"], 3)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       3 ->
@@ -49,7 +49,7 @@ defmodule IfStatementNDFA do
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       4 ->
@@ -60,7 +60,7 @@ defmodule IfStatementNDFA do
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       5 ->
@@ -69,10 +69,10 @@ defmodule IfStatementNDFA do
         case statements["finished"] do
           false ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
 
           true ->
-            checkToken(stream, xml_carry <> "\n" <> statements["xml"], statements["index"], 6)
+            checkToken(stream, xml_carry , statements["index"], 6)
         end
 
       6 ->
@@ -82,7 +82,7 @@ defmodule IfStatementNDFA do
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       7 ->
@@ -101,7 +101,7 @@ defmodule IfStatementNDFA do
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       9 ->
@@ -110,10 +110,10 @@ defmodule IfStatementNDFA do
         case statements["finished"] do
           false ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
 
           true ->
-            checkToken(stream, xml_carry <> "\n" <> statements["xml"], statements["index"], 10)
+            checkToken(stream, xml_carry , statements["index"], 10)
         end
 
       10 ->
@@ -123,7 +123,7 @@ defmodule IfStatementNDFA do
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->

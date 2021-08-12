@@ -4,7 +4,7 @@ defmodule LetStatementNDFA do
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
-    
+
     case tokenState do
       0 ->
         IO.inspect("Checking token LetStatement")
@@ -13,7 +13,7 @@ defmodule LetStatementNDFA do
           tokenType == :keyword and token == "let" -> checkToken(stream, "<keyword> let </keyword>", nextIndex, 1)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       1 ->
@@ -21,9 +21,9 @@ defmodule LetStatementNDFA do
 
         cond do
           varName["finished"] ->
-            checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 2)
+            checkToken(stream, xml_carry , varName["index"], 2)
           true ->
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       2 ->
@@ -36,10 +36,10 @@ defmodule LetStatementNDFA do
         expression = ExpressionNDFA.checkToken(stream, "", index)
 
         cond do
-          expression["finished"] -> checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 4)
+          expression["finished"] -> checkToken(stream, xml_carry , expression["index"], 4)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       4 ->
@@ -47,7 +47,7 @@ defmodule LetStatementNDFA do
           tokenType == :symbol and token == "]" -> checkToken(stream, xml_carry <> "\n<symbol> ] </symbol>", nextIndex, 10)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       10 ->
@@ -55,17 +55,17 @@ defmodule LetStatementNDFA do
           tokenType == :symbol and token == "=" -> checkToken(stream, xml_carry <> "\n<symbol> = </symbol>", nextIndex, 11)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       11 ->
         expression = ExpressionNDFA.checkToken(stream, "", index)
 
         cond do
-          expression["finished"] -> checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 12)
+          expression["finished"] -> checkToken(stream, xml_carry , expression["index"], 12)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       12 ->
@@ -73,7 +73,7 @@ defmodule LetStatementNDFA do
           tokenType == :symbol and token == ";" -> checkToken(stream, xml_carry <> "\n<symbol> ; </symbol>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting LetStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       100 ->

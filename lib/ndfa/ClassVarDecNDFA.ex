@@ -19,7 +19,7 @@ defmodule ClassVarDecNDFA do
           # * Go to nil to go to subroutine
           true ->
             IO.puts(">> Exiting ClassVarDecNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       # * Read: type
@@ -29,10 +29,10 @@ defmodule ClassVarDecNDFA do
         case type["finished"] do
           false ->
             IO.puts(">> Exiting ClassVarDecNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
 
           true ->
-            checkToken(stream, xml_carry <> "\n" <> type["xml"], type["index"], 2)
+            checkToken(stream, xml_carry , type["index"], 2)
         end
 
       # * Read: varName
@@ -42,10 +42,10 @@ defmodule ClassVarDecNDFA do
         case varName["finished"] do
           false ->
             IO.puts(">> Exiting ClassVarDecNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
 
           true ->
-            checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 3)
+            checkToken(stream, xml_carry , varName["index"], 3)
         end
 
       3 ->
@@ -58,12 +58,12 @@ defmodule ClassVarDecNDFA do
 
           true ->
             IO.puts(">> Exiting ClassVarDecNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       4 ->
         varName = VarNameNDFA.checkToken(stream, "", index)
-        checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 3)
+        checkToken(stream, xml_carry , varName["index"], 3)
 
       100 ->
         IO.puts(">> Exiting ClassVarDecNDFA (SUCCESS)")

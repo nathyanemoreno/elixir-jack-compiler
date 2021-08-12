@@ -5,27 +5,27 @@ defmodule ExpressionNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    
+
     case tokenState do
       0 ->
         IO.puts("Checking token Expression")
         term = TermNDFA.checkToken(stream, "", index)
         cond do
-          term["finished"] -> checkToken(stream, term["xml"], term["index"], 1)
+          term["finished"] -> checkToken(stream,"", term["index"], 1)
           true ->
             IO.puts(">> Exiting ExpressionNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       1 ->
         op = OperatorNDFA.checkToken(stream, "", index)
         cond do
-          op["finished"] -> checkToken(stream, xml_carry <> "\n" <> op["xml"], op["index"], 2)
+          op["finished"] -> checkToken(stream, xml_carry , op["index"], 2)
           true -> checkToken(stream, xml_carry, index, 100)
         end
       2 ->
         term = TermNDFA.checkToken(stream, "", index)
         cond do
-          term["finished"] -> checkToken(stream, xml_carry <> "\n" <> term["xml"], term["index"], 1)
+          term["finished"] -> checkToken(stream, xml_carry , term["index"], 1)
           true -> checkToken(stream, xml_carry, index, 100)
         end
       100 ->

@@ -1,5 +1,5 @@
 defmodule SyntaxerNDFA do
-  def checkToken(stream, xml_carry, index \\ 0, tokenState \\ 0) do
+  def checkToken(stream, index \\ 0, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
@@ -16,33 +16,30 @@ defmodule SyntaxerNDFA do
         cond do
           # * Go to state 1
           tokenType == :keyword and token == "class" ->
-            checkToken(stream, "<keyword> class </keyword>", nextIndex, 1)
+            checkToken(stream, nextIndex, 1)
 
           true ->
-            IO.puts(xml_carry)
             {:error, token}
         end
 
       1 ->
-        className = ClassNameNDFA.checkToken(stream, xml_carry, index)
+        className = ClassNameNDFA.checkToken(stream, "", index)
 
         case className["finished"] do
           true ->
-            checkToken(stream, xml_carry <> "\n" <> className["xml"], className["index"], 2)
+            checkToken(stream, className["index"], 2)
 
           # * If error reading ClassName then return unexpected token
           false ->
-            IO.puts(xml_carry)
             {:error, token}
         end
 
       2 ->
         case token do
           "{" ->
-            checkToken(stream, xml_carry <> "\n<symbol> { </symbol>", nextIndex, 3)
+            checkToken(stream, nextIndex, 3)
 
           _ ->
-            IO.puts(xml_carry)
             {:error, token}
         end
 
@@ -51,10 +48,10 @@ defmodule SyntaxerNDFA do
 
         case classVarDec["finished"] do
           true ->
-            checkToken(stream, xml_carry <> "\n" <> classVarDec["xml"], classVarDec["index"], 3)
+            checkToken(stream, classVarDec["index"], 3)
 
           false ->
-            checkToken(stream, xml_carry, classVarDec["index"], 4)
+            checkToken(stream, classVarDec["index"], 4)
         end
 
       4 ->
@@ -62,31 +59,28 @@ defmodule SyntaxerNDFA do
           tokenType == :symbol and token == "}" ->
             checkToken(
               stream,
-              "<class>\n" <> xml_carry <> "\n<symbol> } </symbol>\n</class>",
               nextIndex,
               100
             )
 
           true ->
-            subroutineDec = SubroutineDecNDFA.checkToken(stream, xml_carry, index)
+            subroutineDec = SubroutineDecNDFA.checkToken(stream, "", index)
 
             case subroutineDec["finished"] do
               true ->
                 checkToken(
                   stream,
-                  xml_carry <> "\n" <> subroutineDec["xml"],
                   subroutineDec["index"],
                   4
                 )
 
               false ->
-                IO.puts(xml_carry)
                 {:error, "Syntax error"}
             end
         end
 
       100 ->
-        {:ok, xml_carry}
+        {:ok, "Okay"}
     end
   end
 end

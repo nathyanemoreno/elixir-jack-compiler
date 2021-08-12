@@ -4,7 +4,7 @@ defmodule StatementsNDFA do
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
-    
+
     case tokenState do
       0 ->
         IO.inspect("Checking token Statements")
@@ -12,7 +12,7 @@ defmodule StatementsNDFA do
         statement = StatementNDFA.checkToken(stream, "", index)
 
         cond do
-          statement["finished"] -> checkToken(stream, xml_carry <> "\n" <> statement["xml"], statement["index"], 0)
+          statement["finished"] -> checkToken(stream, xml_carry , statement["index"], 0)
           true -> checkToken(stream, xml_carry, statement["index"], 100)
         end
 

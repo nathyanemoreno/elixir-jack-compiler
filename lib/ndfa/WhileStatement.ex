@@ -5,7 +5,7 @@ defmodule WhileStatementNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    
+
     case tokenState do
       0 ->
         IO.puts("Checking token WhileStatementNDFA")
@@ -14,7 +14,7 @@ defmodule WhileStatementNDFA do
           tokenType == :keyword and token == "while" -> checkToken(stream, "<keyword> while </keyword>", nextIndex, 1)
           true ->
             IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       1 ->
@@ -24,18 +24,18 @@ defmodule WhileStatementNDFA do
             checkToken(stream, xml_carry <> "\n<symbol> ( </symbol>", nextIndex, 2)
           true ->
             IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       2 ->
         expression = ExpressionNDFA.checkToken(stream, "", index)
-        
+
         cond do
           expression["finished"] ->
-            checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 3)
+            checkToken(stream, xml_carry , expression["index"], 3)
           true ->
             IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       3 ->
@@ -44,7 +44,7 @@ defmodule WhileStatementNDFA do
             checkToken(stream, xml_carry <> "\n<symbol> ) </symbol>", nextIndex, 4)
           true ->
             IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       4 ->
         cond do
@@ -53,7 +53,7 @@ defmodule WhileStatementNDFA do
             checkToken(stream, xml_carry <> "\n<symbol> { </symbol>", nextIndex, 5)
           true ->
             IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
 
       5 ->
@@ -62,9 +62,9 @@ defmodule WhileStatementNDFA do
         case statements["finished"] do
           false ->
             IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
           true ->
-            checkToken(stream, xml_carry <> "\n" <> statements["xml"], statements["index"], 6)
+            checkToken(stream, xml_carry , statements["index"], 6)
         end
 
       6 ->
@@ -73,9 +73,9 @@ defmodule WhileStatementNDFA do
             checkToken(stream, xml_carry <> "\n<symbol> } </symbol>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting WhileStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
-      
+
       100 ->
         IO.puts(">> Exiting WhileStatementNDFA (SUCCESS)")
         %{"finished" => true, "index" => index, "token" => token, "xml" => "<whileStatement>\n" <> xml_carry <> "\n</whileStatement>"}

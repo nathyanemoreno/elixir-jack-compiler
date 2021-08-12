@@ -6,7 +6,7 @@ defmodule Syntaxer do
 
       case File.read(fileIn) do
         {:ok, stream} ->
-          case SyntaxerNDFA.checkToken(stream, "") do
+          case SyntaxerNDFA.checkToken(stream) do
             {:ok, syntaxResult} ->
               # * Write xml tags on fileOut
               fileOut = Xmler.run(:syntaxer, filePath, syntaxResult)
@@ -28,7 +28,7 @@ defmodule Syntaxer do
     try do
       case File.read(fileIn) do
         {:ok, stream} ->
-          {:ok, syntaxResult} = SyntaxerNDFA.checkToken(stream, "")
+          {:ok, syntaxResult} = SyntaxerNDFA.checkToken(stream)
           # * Write xml tags on fileOut
           fileOut = Xmler.run(:syntaxer, filePath, syntaxResult)
           Syntax.success("Compilation of file #{fileIn} to #{fileOut}")

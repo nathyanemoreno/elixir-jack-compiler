@@ -5,7 +5,7 @@ defmodule TermNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    
+
     case tokenState do
       0 ->
         IO.inspect(
@@ -20,26 +20,26 @@ defmodule TermNDFA do
             keywordConstant = KeywordConstantNDFA.checkToken(stream, "", index)
 
             cond do
-              keywordConstant["finished"]-> checkToken(stream, keywordConstant["xml"], keywordConstant["index"], 100)
+              keywordConstant["finished"]-> checkToken(stream,"", keywordConstant["index"], 100)
               true ->
                 subroutineCall = SubroutineCallNDFA.checkToken(stream, "", index)
 
                 cond do
-                  subroutineCall["finished"] -> checkToken(stream, subroutineCall["xml"], subroutineCall["index"], 100)
+                  subroutineCall["finished"] -> checkToken(stream,"", subroutineCall["index"], 100)
                   true ->
                     # * Verify if is VarName
                     varName = VarNameNDFA.checkToken(stream, "", index)
 
                     cond do
-                      varName["finished"] -> checkToken(stream, varName["xml"], varName["index"], 10)
+                      varName["finished"] -> checkToken(stream,"", varName["index"], 10)
                       true ->
                         unaryOperator = UnaryOperatorNDFA.checkToken(stream, "", index)
 
                         cond do
-                          unaryOperator["finished"] -> checkToken(stream, unaryOperator["xml"], unaryOperator["index"], 20)
+                          unaryOperator["finished"] -> checkToken(stream,"", unaryOperator["index"], 20)
                           true ->
                             IO.puts(">> Exiting TermNDFA (FAILED)")
-                            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+                            %{"finished" => false, "index" => index, "token" => token}
                         end
                       end
                     end
@@ -49,17 +49,17 @@ defmodule TermNDFA do
         expression = ExpressionNDFA.checkToken(stream, "", index)
 
         cond do
-          expression["finished"] -> checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 2)
+          expression["finished"] -> checkToken(stream, xml_carry , expression["index"], 2)
           true ->
             IO.puts(">> Exiting TermNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       2 ->
         cond do
           tokenType == :symbol and token == ")" -> checkToken(stream, xml_carry <> "<symbol> ) </symbol>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting TermNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       10 ->
         cond do
@@ -70,26 +70,26 @@ defmodule TermNDFA do
         expression = ExpressionNDFA.checkToken(stream, "", index)
 
         cond do
-          expression["finished"] -> checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 12)
+          expression["finished"] -> checkToken(stream, xml_carry , expression["index"], 12)
           true ->
             IO.puts(">> Exiting TermNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       12 ->
         cond do
           tokenType == :symbol and token == "]" -> checkToken(stream, xml_carry <> "<symbol> ] </symbol>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting TermNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       20 ->
         term = TermNDFA.checkToken(stream, "", index)
 
         cond do
-          term["finished"] -> checkToken(stream, xml_carry <> "\n" <> term["xml"], term["index"], 100)
+          term["finished"] -> checkToken(stream, xml_carry , term["index"], 100)
           true ->
             IO.puts(">> Exiting TermNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       100 ->
         IO.puts(">> Exiting TermNDFA (SUCCESS)")

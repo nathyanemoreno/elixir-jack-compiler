@@ -5,7 +5,7 @@ defmodule ClassNameNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
     # IO.inspect(tokenObj)
-    
+
     case state do
       0 ->
         IO.inspect("Checking token in ClassName " <> "--------------------> " <> tokenObj["token"])

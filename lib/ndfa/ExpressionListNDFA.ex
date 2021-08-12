@@ -5,14 +5,14 @@ defmodule ExpressionListNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    
+
     case tokenState do
       0 ->
         IO.inspect(
           "Checking token ExpressionListNDFA")
         expression = ExpressionNDFA.checkToken(stream, "", index)
         cond do
-          expression["finished"] -> checkToken(stream, "\n" <> expression["xml"], expression["index"], 1)
+          expression["finished"] -> checkToken(stream, "\n" , expression["index"], 1)
           true ->
             checkToken(stream, xml_carry, index, 100)
         end
@@ -25,7 +25,7 @@ defmodule ExpressionListNDFA do
       2 ->
         expression = ExpressionNDFA.checkToken(stream, "", index)
         cond do
-          expression["finished"] -> checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 1)
+          expression["finished"] -> checkToken(stream, xml_carry , expression["index"], 1)
           true ->
             checkToken(stream, xml_carry, index, 100)
         end

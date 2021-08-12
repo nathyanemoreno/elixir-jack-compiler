@@ -5,20 +5,20 @@ defmodule ParameterListNDFA do
     token = tokenObj["token"]
     nextIndex = tokenObj["index"]
     # IO.inspect(tokenObj)
-    
+
     case state do
       0 ->
         IO.inspect("Checking token in ParameterList ")
         type = TypeNDFA.checkToken(stream, "", index)
         cond do
-          type["finished"] -> checkToken(stream, "\n" <> type["xml"], type["index"], 1)
+          type["finished"] -> checkToken(stream, "\n" , type["index"], 1)
           true ->
             checkToken(stream, xml_carry, index, 100)
         end
       1 ->
         varName = VarNameNDFA.checkToken(stream, "", index)
         cond do
-          varName["finished"] -> checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 2)
+          varName["finished"] -> checkToken(stream, xml_carry , varName["index"], 2)
           true ->
             checkToken(stream, xml_carry, index, 100)
         end
@@ -31,14 +31,14 @@ defmodule ParameterListNDFA do
       3 ->
         type = TypeNDFA.checkToken(stream, "", index)
         cond do
-          type["finished"] -> checkToken(stream, xml_carry <> "\n" <> type["xml"], type["index"], 4)
+          type["finished"] -> checkToken(stream, xml_carry , type["index"], 4)
           true ->
             checkToken(stream, xml_carry, index, 100)
         end
       4 ->
         varName = VarNameNDFA.checkToken(stream, "", index)
         cond do
-          varName["finished"] -> checkToken(stream, xml_carry <> "\n" <> varName["xml"], varName["index"], 2)
+          varName["finished"] -> checkToken(stream, xml_carry , varName["index"], 2)
           true ->
             checkToken(stream, xml_carry, index, 100)
         end

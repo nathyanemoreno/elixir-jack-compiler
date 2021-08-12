@@ -5,7 +5,7 @@ defmodule ReturnStatementNDFA do
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-    
+
     case tokenState do
       0 ->
         IO.inspect("Checking token ReturnStatement")
@@ -14,13 +14,13 @@ defmodule ReturnStatementNDFA do
           tokenType == :keyword and token == "return" -> checkToken(stream, "<keyword> return </keyword>", nextIndex, 1)
           true ->
             IO.puts(">> Exiting ReturnStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       1 ->
         expression = ExpressionNDFA.checkToken(stream, "", index)
         case expression["finished"] do
           true ->
-            checkToken(stream, xml_carry <> "\n" <> expression["xml"], expression["index"], 2)
+            checkToken(stream, xml_carry , expression["index"], 2)
           false ->
             checkToken(stream, xml_carry, expression["index"], 2)
         end
@@ -30,7 +30,7 @@ defmodule ReturnStatementNDFA do
           tokenType == :symbol and token == ";" -> checkToken(stream, xml_carry <> "\n<symbol> ; </symbol>", nextIndex, 100)
           true ->
             IO.puts(">> Exiting ReturnStatementNDFA (FAILED)")
-            %{"finished" => false, "index" => index, "token" => token, "xml" => ""}
+            %{"finished" => false, "index" => index, "token" => token}
         end
       100 ->
         IO.puts(">> Exiting ReturnStatementNDFA (SUCCESS)")
