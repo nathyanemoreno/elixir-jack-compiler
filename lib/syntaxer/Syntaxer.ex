@@ -9,9 +9,9 @@ defmodule Syntaxer do
           case SyntaxerNDFA.checkToken(stream) do
             {:ok, message} ->
               # * Can go to compilation phase
-              {:ok, :compile}
               # fileOut = Xmler.run(:syntaxer, filePath, syntaxResult)
               Syntax.success("No errors")
+              {:ok, :compile}
 
             {:error, token} ->
               Syntax.unexpectedToken(token)
@@ -22,7 +22,7 @@ defmodule Syntaxer do
       end
     after
       File.close(fileIn)
-      {:ok, :no_error}
+      {:ok, :compile}
     end
   end
 
@@ -31,16 +31,17 @@ defmodule Syntaxer do
       case File.read(fileIn) do
         {:ok, stream} ->
           {:ok, syntaxResult} = SyntaxerNDFA.checkToken(stream)
-          # * Write xml tags on fileOut
-          fileOut = Xmler.run(:syntaxer, filePath, syntaxResult)
-          Syntax.success("Compilation of file #{fileIn} to #{fileOut}")
+          # * Can go to compilation phase
+          {:ok, :compile}
+          # fileOut = Xmler.run(:syntaxer, filePath, syntaxResult)
+          # Syntax.success("Compilation of file #{fileIn} to #{fileOut}")
 
         {:error, :enoent} ->
           Syntax.error("Unable to read #{fileIn}")
       end
     after
       File.close(fileIn)
-      {:ok, :no_error}
+      {:ok, :compile}
     end
   end
 end

@@ -1,15 +1,21 @@
 class Square {
-      //    field int x, y; // screen location of the square's top-left corner
-      //    field int size; // length of this square, in pixels
+      field int x, y; // screen location of the square's top-left corner
+      // static int name; // length f this square, in pixels
+      // field int size; // length f this square, in pixels
+      // static int amount;
 
       /** Constructs a new square with a given location and size. */
       constructor Square new(int Ax, int Ay, int Asize) {
-            let varname [1] = Ay;
-            let name = Ax;
-            if (size > 2) {
+            var int a, b;
+            var int d;
+            // var int b;
+            // var int c;
+            // let varname [1] = Ay;
+            // let name = Ax;
+            // if (size > 2) {
 
-            } else {
-                 asdashk 
-            }
+            // } else {
+            //      asdashk 
+            // }
       }
 }
