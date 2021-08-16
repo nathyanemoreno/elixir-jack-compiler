@@ -139,7 +139,7 @@ defmodule LexerDFA do
                 checkTokenToken(f, 2000, nCharIndex, carry <> char)
 
               Char.isValid(char) ->
-                checkTokenToken(f, 3000, nCharIndex, carry <> char)
+                checkTokenToken(f, 3000, cCharIndex, carry)
 
               true ->
                 %{"token" => carry <> char, "type" => :undefined, "index" => nCharIndex}
@@ -152,7 +152,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 2, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       2 ->
@@ -161,13 +161,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 3, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       3 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -185,7 +185,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 9, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       5 ->
@@ -194,7 +194,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 6, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       6 ->
@@ -203,7 +203,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 7, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       7 ->
@@ -212,13 +212,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 8, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       8 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -230,7 +230,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 10, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       10 ->
@@ -239,7 +239,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 11, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       11 ->
@@ -248,7 +248,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 12, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       12 ->
@@ -257,7 +257,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 13, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       13 ->
@@ -266,7 +266,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 14, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       14 ->
@@ -275,7 +275,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 15, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       15 ->
@@ -284,7 +284,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 16, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       16 ->
@@ -293,7 +293,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 17, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       17 ->
@@ -302,13 +302,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 18, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       18 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -320,7 +320,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 20, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       20 ->
@@ -329,7 +329,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 21, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       21 ->
@@ -338,7 +338,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 22, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       22 ->
@@ -347,7 +347,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 23, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       23 ->
@@ -356,7 +356,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 24, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       24 ->
@@ -365,13 +365,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 25, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       25 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -389,7 +389,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 31, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       27 ->
@@ -398,7 +398,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 28, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       28 ->
@@ -407,7 +407,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 29, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       29 ->
@@ -416,13 +416,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 30, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       30 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -434,7 +434,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 32, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       32 ->
@@ -443,7 +443,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 33, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       33 ->
@@ -452,13 +452,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 34, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       34 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -470,7 +470,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 36, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       36 ->
@@ -479,7 +479,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 37, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       37 ->
@@ -488,7 +488,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 38, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       38 ->
@@ -497,7 +497,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 39, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       39 ->
@@ -506,13 +506,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 40, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       40 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -524,7 +524,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 42, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       42 ->
@@ -533,7 +533,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 43, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       43 ->
@@ -542,7 +542,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 44, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       44 ->
@@ -551,7 +551,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 45, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       45 ->
@@ -560,13 +560,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 46, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       46 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -578,13 +578,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 48, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       48 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -599,7 +599,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 47, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       50 ->
@@ -608,7 +608,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 51, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       51 ->
@@ -617,13 +617,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 52, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       52 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -635,7 +635,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 54, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       54 ->
@@ -644,13 +644,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 55, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       55 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -665,7 +665,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 53, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       57 ->
@@ -674,7 +674,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 58, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       58 ->
@@ -683,13 +683,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 59, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       59 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -698,7 +698,7 @@ defmodule LexerDFA do
       60 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -713,7 +713,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 60, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       62 ->
@@ -722,13 +722,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 63, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       63 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -740,7 +740,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 65, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       65 ->
@@ -749,7 +749,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 66, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       66 ->
@@ -758,7 +758,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 67, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       67 ->
@@ -767,13 +767,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 68, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       68 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -785,7 +785,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 70, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       70 ->
@@ -794,7 +794,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 71, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       71 ->
@@ -803,7 +803,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 72, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       72 ->
@@ -812,7 +812,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 73, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       73 ->
@@ -821,7 +821,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 74, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       74 ->
@@ -830,13 +830,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 75, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       75 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -848,7 +848,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 77, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       77 ->
@@ -857,7 +857,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 78, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       78 ->
@@ -866,13 +866,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 79, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       79 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -884,7 +884,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 81, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       81 ->
@@ -893,13 +893,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 82, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       82 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -911,13 +911,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 84, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       84 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -929,7 +929,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 86, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       86 ->
@@ -938,7 +938,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 87, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       87 ->
@@ -947,13 +947,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 88, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       88 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
@@ -965,7 +965,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 90, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       90 ->
@@ -974,7 +974,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 91, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       91 ->
@@ -983,7 +983,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 92, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       92 ->
@@ -992,7 +992,7 @@ defmodule LexerDFA do
             checkTokenToken(f, 93, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       93 ->
@@ -1001,13 +1001,13 @@ defmodule LexerDFA do
             checkTokenToken(f, 94, nCharIndex, carry <> char)
 
           _ ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
         end
 
       94 ->
         cond do
           Char.isValid(char) ->
-            checkTokenToken(f, 3000, nCharIndex, carry <> char)
+            checkTokenToken(f, 3000, cCharIndex, carry)
 
           true ->
             %{"token" => carry, "type" => :keyword, "index" => cCharIndex}
