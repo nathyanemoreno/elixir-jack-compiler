@@ -1119,9 +1119,6 @@ defmodule LexerDFA do
 
       3000 ->
         cond do
-          Char.isNumber(char) ->
-            checkTokenToken(f, 2000, nCharIndex, carry <> char)
-
           Char.isValid(char) ->
             checkTokenToken(f, 3000, nCharIndex, carry <> char)
 
