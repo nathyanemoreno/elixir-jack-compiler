@@ -13,166 +13,301 @@ defmodule Compiler do
   end
 
   def build(stream) do
-    buildClass(stream)
+    {:ok, fileClassObject} = VMClassDefNDFA.checkToken(stream)
+    IO.inspect(fileClassObject)
+
+    fileContent = build_class(fileClassObject)
+    IO.puts(fileContent)
+    fileContent
   end
 
-  def buildClass(stream, index \\ 0) do
-    tokenObj = Lexer.lexer(stream, index)
-    token = tokenObj["token"]
-    nextToken = tokenObj["index"]
-    tokenType = tokenObj["type"]
+  @spec build_class(nil | maybe_improper_list | map) :: binary
+  def build_class(classObject) do
+    vars = get_vars()
+    vars = Map.replace(vars, "fields", classObject["fields"])
+    vars = Map.replace(vars, "statics", classObject["statics"])
 
-    IO.puts("Check class --> " <> token)
+    vmContent = ""
 
-    cond do
-      token == nil ->
-        true
+    vmContent =
+      vmContent <>
+        build_subroutines_functions(classObject["className"], classObject["functions"], vars)
 
-      token == "{" ->
-        {declarations, nextToken} = buildDeclarations(stream, nextToken)
-        # IO.inspect(declarations)
-        methods = buildFunctions(stream, nextToken, declarations)
+    # vmContent = vmContent <> build_subroutines_methods(classObject["methods"], vars)
+    # vmContent = vmContent <> build_subroutines_constructors(classObject["constructors"], vars)
+    vmContent
+  end
 
-      # pile |> Enum.with_index() |> Enum.each(fn {v, i} -> push(Enum.at(kind, i), i) end)
+  def build_subroutines_functions(className, functions, vars, index \\ 0) do
+    item = Enum.at(functions, index)
 
-      token == "class" or tokenType == :identifier or true ->
-        buildClass(stream, nextToken)
+    case item do
+      nil ->
+        ""
+
+      _ ->
+        fvars = Map.replace(vars, "locals", item["varDecs"])
+        fvars = Map.replace(fvars, "arguments", item["parameters"])
+
+        "function " <>
+          className <>
+          "." <>
+          item["subroutineName"] <>
+          " " <>
+          Integer.to_string(Enum.count(item["parameters"])) <>
+          "\n" <>
+          build_statments(item["statments"], fvars) <>
+          build_subroutines_functions(className, functions, vars, 1 + index)
     end
   end
 
-  def buildDeclarations(stream, index \\ 0, pile \\ [%{"name" => "", "kind" => "", "type" => ""}]) do
-    tokenObj = Lexer.lexer(stream, index)
-    token = tokenObj["token"]
-    tokenType = tokenObj["type"]
-    nextToken = tokenObj["index"]
+  def build_statments(statments, vars, index \\ 0) do
+    statment = Enum.at(statments, index)
 
-    # IO.inspect(token)
+    case statment do
+      nil ->
+        ""
 
-    IO.puts("Check declaration " <> token)
+      _ ->
+        case statment["kind"] do
+          "do" ->
+            build_do(statment["statment"], vars) <>
+              build_statments(statments, vars, 1 + index)
 
-    cond do
-      token == "field" or token == "static" ->
-        [head | tail] = pile
-        row = Map.replace(head, "kind", token)
-        buildDeclarations(stream, nextToken, [row] ++ tail)
+          "let" ->
+            build_let(statment["statment"], vars) <>
+              build_statments(statments, vars, 1 + index)
 
-      token == "," ->
-        [head | tail] = pile
-        row = Map.replace(head, "name", "")
-        buildDeclarations(stream, nextToken, [row] ++ pile)
+          "return" ->
+            build_return(statment["statment"], vars) <>
+              build_statments(statments, vars, 1 + index)
 
-      tokenType == :identifier ->
-        [head | tail] = pile
-        row = Map.replace(head, "name", token)
-        row = Map.replace(row, "type", tokenType)
-        buildDeclarations(stream, nextToken, [row] ++ tail)
+          _ ->
+            nil
+        end
+    end
+  end
 
-      # * Duplicates the last row
-      token == ";" ->
-        [head | tail] = pile
-        buildDeclarations(stream, nextToken, [head] ++ pile)
+  def build_do(doStatment, vars) do
+    subroutineCall = doStatment["subroutineCall"]
 
-      token == "constructor" or token == "method" or token == "}" ->
-        [head | tail] = pile
-        # buildFunctions(stream, tail, nextToken)
-        {pile, nextToken}
+    build_subroutineCall(subroutineCall, vars)
+  end
 
+  def build_expressionList(expressions, vars, index \\ 0) do
+    expression = Enum.at(expressions, index)
+
+    case expression do
+      nil ->
+        ""
+
+      _ ->
+        build_expression(expression, vars) <>
+          build_expressionList(expressions, vars, 1 + index)
+    end
+  end
+
+  def build_expression(expression, vars, index \\ 0, ops \\ []) do
+    chunk = Enum.at(expression, index)
+
+    case chunk do
+      nil ->
+        pop_ops(ops)
+
+      _ ->
+        case rem(index, 2) === 0 do
+          true ->
+            # Terms
+            build_expression_term(chunk, vars) <>
+              build_expression(expression, vars, 1 + index, ops)
+
+          false ->
+            # Ops
+            build_expression(expression, vars, 1 + index, ops ++ [build_expression_op(chunk)])
+        end
+    end
+  end
+
+  def build_expression_term(term, vars) do
+    case term["kind"] do
+      :expression ->
+        build_expression(term["term"], vars)
+
+      :variable ->
+        "push " <> get_var_scope_index(term["term"], vars, :local) <> "\n"
+
+      :integerConstant ->
+        "push constant " <> term["term"] <> "\n"
+
+      :subroutineCall ->
+        build_subroutineCall(term["term"], vars)
+    end
+  end
+
+  def build_subroutineCall(subroutineCall, vars) do
+    build_expressionList(subroutineCall["expressionList"], vars) <>
+      "call " <>
+      subroutineCall["completeName"] <>
+      " " <> Integer.to_string(Enum.count(subroutineCall["expressionList"])) <> "\n"
+  end
+
+  def build_expression_op(op) do
+    case op["operator"] do
+      "+" -> "add\n"
+      "*" -> "call Math.multiply 2\n"
+    end
+  end
+
+  def pop_ops(ops, index \\ 0) do
+    op = Enum.at(ops, index)
+
+    case op do
+      nil ->
+        case index == 0 do
+          true ->
+            ""
+
+          false ->
+            pop_ops_reverse(ops, index - 1)
+        end
+
+      _ ->
+        pop_ops(ops, 1 + index)
+    end
+  end
+
+  def pop_ops_reverse(ops, index) do
+    case index == -1 do
       true ->
-        buildDeclarations(stream, nextToken, pile)
+        ""
+
+      _ ->
+        op = Enum.at(ops, index)
+        Enum.at(ops, index) <> pop_ops_reverse(ops, index - 1)
     end
   end
 
-  def buildFunctions(stream, index \\ 0, pile \\ [%{"name" => "", "kind" => "", "type" => ""}]) do
-    # IO.inspect(kind)
-    # IO.inspect(pile)
-    tokenObj = Lexer.lexer(stream, index)
-    token = tokenObj["token"]
-    nextToken = tokenObj["index"]
-    tokenType = tokenObj["type"]
+  def build_let(letStatment, vars) do
+    varName = letStatment["varName"]
+    expression = letStatment["expression"]
 
-    cond do
-      tokenType == :identifier ->
-        IO.puts("Check function " <> token)
-        [head | tail] = pile
-        row = Map.replace(head, "name", token)
-        row = Map.replace(row, "type", "local")
-        IO.inspect([row] ++ tail)
-        buildFunctions(stream, nextToken, [row] ++ tail)
+    build_expression(expression, vars) <>
+      "pop " <> get_var_scope_index(varName, vars, :local) <> "\n"
+  end
 
-      token == "var" ->
-        [head | tail] = pile
+  def build_return(returnStatment, vars) do
+    expression = returnStatment["expression"]
 
-        row = Map.replace(head, "kind", token)
-        # IO.inspect(row)
-        buildFunctions(stream, nextToken, [row] ++ tail)
+    case expression do
+      nil ->
+        "return\n"
 
-      token == "(" ->
-        [head | tail] = pile
-        row = Map.replace(head, "name", "")
-        {arguments, nextToken} = buildArguments(stream, nextToken, [row] ++ pile)
-        # * Duplicates the last row
-        [head | tail] = arguments
-        buildFunctions(stream, nextToken, [head] ++ arguments)
-
-      token == "," ->
-        [head | tail] = pile
-        row = Map.replace(head, "name", "")
-        buildFunctions(stream, nextToken, [row] ++ pile)
-
-      token == ";" ->
-        [head | tail] = pile
-        buildFunctions(stream, nextToken, [head] ++ pile)
-
-      token == "method" or token == "}" ->
-        [head | tail] = pile
-        {pile, nextToken}
-
-      # token == ";" or token == "method" or tokenType == :identifier or true ->
-      #   buildFunctions(stream, pile, nextToken)
-
-      true ->
-        buildFunctions(stream, nextToken, pile)
+      _ ->
+        build_expression(expression, vars) <> "return\n"
     end
   end
 
-  def buildArguments(stream, index \\ 0, pile \\ [%{"name" => "", "kind" => "", "type" => ""}]) do
-    tokenObj = Lexer.lexer(stream, index)
-    token = tokenObj["token"]
-    tokenType = tokenObj["type"]
-    nextToken = tokenObj["index"]
-
-    cond do
-      tokenType == :keyword ->
-        [head | tail] = pile
-        row = Map.replace(head, "kind", "argument")
-        row = Map.replace(row, "type", token)
-        buildArguments(stream, nextToken, [row] ++ tail)
-
-      tokenType == :identifier ->
-        IO.puts("Check argument " <> token)
-        [head | tail] = pile
-        row = Map.replace(head, "name", token)
-        buildArguments(stream, nextToken, [row] ++ tail)
-
-      token == "," ->
-        [head | tail] = pile
-        row = Map.replace(head, "name", "")
-        buildArguments(stream, nextToken, [row] ++ pile)
-
-      token == ")" ->
-        {pile, nextToken}
-
-      true ->
-        buildArguments(stream, nextToken, pile)
-    end
+  def get_vars() do
+    %{"locals" => [], "arguments" => [], "fields" => [], "statics" => []}
   end
 
-  def push(kind, pos) do
-    IO.puts(
-      IO.ANSI.blue() <>
-        "push " <>
-        IO.ANSI.magenta() <>
-        kind <> " " <> IO.ANSI.white() <> Integer.to_string(pos) <> IO.ANSI.reset()
-    )
+  def get_var_scope_index(
+        varName,
+        vars,
+        currentType,
+        listIndex \\ 0,
+        subitemIndex \\ 0,
+        overallIndex \\ 0
+      ) do
+    case currentType do
+      :local ->
+        item = Enum.at(vars["locals"], listIndex)
+
+        case item do
+          nil ->
+            get_var_scope_index(varName, vars, :argument)
+
+          _ ->
+            subitem = Enum.at(item["varNames"], subitemIndex)
+
+            case subitem do
+              nil ->
+                get_var_scope_index(varName, vars, :local, 1 + listIndex, 0, 1 + overallIndex)
+
+              _ ->
+                case subitem == varName do
+                  true ->
+                    "local " <> Integer.to_string(overallIndex)
+
+                  false ->
+                    get_var_scope_index(
+                      varName,
+                      vars,
+                      :local,
+                      listIndex,
+                      1 + subitemIndex,
+                      1 + overallIndex
+                    )
+                end
+            end
+        end
+
+      :argument ->
+        item = Enum.at(vars["arguments"], listIndex)
+
+        case item do
+          nil ->
+            get_var_scope_index(varName, vars, :field)
+
+          _ ->
+            case item["varName"] == varName do
+              true ->
+                "argument " <> Integer.to_string(overallIndex)
+
+              false ->
+                get_var_scope_index(varName, vars, :argument, 1 + listIndex, 0, 1 + overallIndex)
+            end
+        end
+
+      :field ->
+        item = Enum.at(vars["fields"], listIndex)
+
+        case item do
+          nil -> get_var_scope_index(varName, vars, :static)
+          _ -> get_var_scope_index(varName, vars, :field, 1 + listIndex)
+        end
+
+      :static ->
+        item = Enum.at(vars["statics"], listIndex)
+
+        case item do
+          nil ->
+            nil
+
+          _ ->
+            subitem = Enum.at(item["varNames"], subitemIndex)
+
+            case subitem do
+              nil ->
+                get_var_scope_index(varName, vars, :static, 1 + listIndex, 0, 1 + overallIndex)
+
+              _ ->
+                case subitem == varName do
+                  true ->
+                    "static " <> Integer.to_string(overallIndex)
+
+                  false ->
+                    get_var_scope_index(
+                      varName,
+                      vars,
+                      :static,
+                      listIndex,
+                      1 + subitemIndex,
+                      1 + overallIndex
+                    )
+                end
+            end
+        end
+    end
   end
 end

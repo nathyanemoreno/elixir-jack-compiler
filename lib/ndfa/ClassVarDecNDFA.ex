@@ -51,7 +51,7 @@ defmodule ClassVarDecNDFA do
       3 ->
         cond do
           tokenType == :symbol and token == "," ->
-            checkToken(stream, nextIndex, 4)
+            checkToken(stream, nextIndex, 2)
 
           tokenType == :symbol and token == ";" ->
             checkToken(stream, nextIndex, 100)
@@ -60,11 +60,7 @@ defmodule ClassVarDecNDFA do
 
             %{"finished" => false, "index" => index, "token" => token}
         end
-
-      4 ->
-        varName = VarNameNDFA.checkToken(stream, index)
-        checkToken(stream, varName["index"], 3)
-
+        
       100 ->
 
 
