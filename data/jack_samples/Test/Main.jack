@@ -1,0 +1,22 @@
+class Main {
+      function void main() {
+            var int x, y;
+            var int maior;
+            
+            let x = 0;
+            let y = 0;
+
+            while (x < 5) {
+                  let x = x + 1;
+                  do Output.printInt();
+            }
+
+            if (x > y) {
+                  let maior = x;
+            } else {
+                  let maior = y;
+            }
+
+            return;
+      }
+}
