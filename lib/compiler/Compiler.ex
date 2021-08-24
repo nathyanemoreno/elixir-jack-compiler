@@ -472,7 +472,7 @@ defmodule Compiler do
               _ ->
                 case subitem == varName do
                   true ->
-                    "field " <> Integer.to_string(overallIndex)
+                    "this " <> Integer.to_string(overallIndex)
 
                   false ->
                     get_var_scope_index(
