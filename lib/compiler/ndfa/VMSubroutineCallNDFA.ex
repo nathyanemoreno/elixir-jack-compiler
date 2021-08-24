@@ -15,7 +15,7 @@ defmodule VMSubroutineCallNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect("Checking token SubroutineCall")
+        IO.puts("Checking token SubroutineCall")
         subroutineName = VMSubroutineNameNDFA.checkToken(stream, index)
 
         cond do
@@ -24,6 +24,7 @@ defmodule VMSubroutineCallNDFA do
             checkToken(stream, subroutineName["index"], mModel, 1)
 
           true ->
+            IO.puts(">> Exiting VMSubroutineCallNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "object" => ""}
         end
 
@@ -36,6 +37,7 @@ defmodule VMSubroutineCallNDFA do
             checkToken(stream, nextIndex, mModel, 10)
 
           true ->
+            IO.puts(">> Exiting VMSubroutineCallNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "object" => ""}
         end
 
@@ -44,7 +46,8 @@ defmodule VMSubroutineCallNDFA do
 
         cond do
           expressionList["finished"] ->
-            mModel = Map.replace(mModel, "expressionList", expressionList["object"]["expressions"])
+            mModel =
+              Map.replace(mModel, "expressionList", expressionList["object"]["expressions"])
 
             checkToken(
               stream,
@@ -54,13 +57,18 @@ defmodule VMSubroutineCallNDFA do
             )
 
           true ->
+            IO.puts(">> Exiting VMSubroutineCallNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "object" => ""}
         end
 
       3 ->
         cond do
-          tokenType == :symbol and token == ")" -> checkToken(stream, nextIndex, mModel, 100)
-          true -> %{"finished" => false, "index" => index, "token" => token, "object" => ""}
+          tokenType == :symbol and token == ")" ->
+            checkToken(stream, nextIndex, mModel, 100)
+
+          true ->
+            IO.puts(">> Exiting VMSubroutineCallNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "object" => ""}
         end
 
       10 ->
@@ -83,13 +91,18 @@ defmodule VMSubroutineCallNDFA do
             )
 
           true ->
+            IO.puts(">> Exiting VMSubroutineCallNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "object" => ""}
         end
 
       11 ->
         cond do
-          tokenType == :symbol and token == "(" -> checkToken(stream, nextIndex, mModel, 12)
-          true -> %{"finished" => false, "index" => index, "token" => token, "object" => ""}
+          tokenType == :symbol and token == "(" ->
+            checkToken(stream, nextIndex, mModel, 12)
+
+          true ->
+            IO.puts(">> Exiting VMSubroutineCallNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "object" => ""}
         end
 
       12 ->
@@ -97,7 +110,8 @@ defmodule VMSubroutineCallNDFA do
 
         cond do
           expressionList["finished"] ->
-            mModel = Map.replace(mModel, "expressionList", expressionList["object"]["expressions"])
+            mModel =
+              Map.replace(mModel, "expressionList", expressionList["object"]["expressions"])
 
             checkToken(
               stream,
@@ -107,16 +121,22 @@ defmodule VMSubroutineCallNDFA do
             )
 
           true ->
+            IO.puts(">> Exiting VMSubroutineCallNDFA (FAILED)")
             %{"finished" => false, "index" => index, "token" => token, "object" => ""}
         end
 
       13 ->
         cond do
-          tokenType == :symbol and token == ")" -> checkToken(stream, nextIndex, mModel, 100)
-          true -> %{"finished" => false, "index" => index, "token" => token, "object" => ""}
+          tokenType == :symbol and token == ")" ->
+            checkToken(stream, nextIndex, mModel, 100)
+
+          true ->
+            IO.puts(">> Exiting VMSubroutineCallNDFA (FAILED)")
+            %{"finished" => false, "index" => index, "token" => token, "object" => ""}
         end
 
       100 ->
+        IO.puts(">> Exiting VMSubroutineCallNDFA (SUCCESS)")
         %{"finished" => true, "index" => index, "token" => token, "object" => mModel}
     end
   end

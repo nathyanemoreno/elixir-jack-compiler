@@ -26,7 +26,7 @@ defmodule Compiler do
 
       fileOut = build_class(fileClassObject)
       # IO.puts(fileContent)
-      build(tail, fileContent <> fileOut <> "\n")
+      build(tail, fileContent <> fileOut)
     else
       fileContent
     end
@@ -48,6 +48,25 @@ defmodule Compiler do
     vmContent
   end
 
+  def count_locals(locals, index1 \\ 0, index2 \\ 0) do
+    localGroup = Enum.at(locals, index1)
+
+    case localGroup do
+      nil ->
+        0
+
+      _ ->
+        local = Enum.at(localGroup["varNames"], index2)
+
+        case local do
+          nil -> count_locals(locals, 1 + index1)
+          _ ->
+            IO.inspect(local);
+            1 + count_locals(locals, index1, 1 + index2)
+        end
+    end
+  end
+
   def build_subroutines_functions(className, functions, vars, index \\ 0) do
     item = Enum.at(functions, index)
 
@@ -64,7 +83,7 @@ defmodule Compiler do
           "." <>
           item["subroutineName"] <>
           " " <>
-          Integer.to_string(Enum.count(item["parameters"])) <>
+          Integer.to_string(count_locals(item["varDecs"])) <>
           "\n" <>
           build_statements(item["statements"], fvars) <>
           build_subroutines_functions(className, functions, vars, 1 + index)
@@ -73,6 +92,9 @@ defmodule Compiler do
 
   def build_statements(statements, vars, index \\ 0) do
     statement = Enum.at(statements, index)
+    IO.puts("Building statment:")
+    IO.inspect(statement)
+    IO.puts("----------------------")
 
     case statement do
       nil ->
@@ -125,8 +147,11 @@ defmodule Compiler do
     end
   end
 
+  @spec build_expression(any, any, integer, any) :: binary
   def build_expression(expression, vars, index \\ 0, ops \\ []) do
     chunk = Enum.at(expression, index)
+    IO.puts("---------------------------------")
+    IO.inspect(expression)
 
     case chunk do
       nil ->
@@ -157,34 +182,30 @@ defmodule Compiler do
       _ ->
         "label WHILE_EXP#{index}\n" <>
           build_expression(statement, vars) <>
-          "\n" <>
+          "not\n" <>
           "if-goto WHILE_END#{index}\n" <>
-          build_statements(statements, vars, index) <>
+          build_statements(statements, vars) <>
           "goto WHILE_EXP#{index}\n" <>
           "label WHILE_END#{index}\n"
     end
   end
 
   def build_if(ifStatement, vars, index \\ 0) do
-    statement = ifStatement["expression"]
+    expression = ifStatement["expression"]
     statements = ifStatement["statements"]
-    CompilerMessages.alert("YAHARO")
-    IO.inspect(statements)
+    elseStatements = ifStatement["elseStatements"]
 
-    case statement do
+    case statements do
       nil ->
-        "return\n"
+        ""
 
       _ ->
-        build_expression(statement, vars) <>
-        "if-goto IF_TRUE\n" <>
-        "goto IF_FALSE" <>
-        "label IF_TRUE"<>
-        build_statements(statements, vars, index) <>
-        "goto IF_END#{index}\n" <>
-        "label IF_FALSE\n" <>
-        build_statements(statements, vars, index)
-        "label IF_END#{index}\n"
+        build_expression(expression, vars) <>
+          "if-goto IF_TRUE#{index}\ngoto IF_FALSE#{index}\nlabel IF_TRUE#{index}\n" <>
+          build_statements(statements, vars) <>
+          "goto IF_END#{index}\nlabel IF_FALSE#{index}\n" <>
+          build_statements(elseStatements, vars) <>
+          "label IF_END#{index}\n"
     end
   end
 
@@ -211,16 +232,18 @@ defmodule Compiler do
     build_expressionList(subroutineCall["expressionList"], vars) <>
       "call " <>
       subroutineCall["completeName"] <>
-      " " <> Integer.to_string(Enum.count(subroutineCall["expressionList"])) <> "\n"
+      " " <> Integer.to_string(1 + Enum.count(subroutineCall["expressionList"])) <> "\n"
   end
 
   def build_expression_op(op) do
     case op["operator"] do
       "+" -> "add\n"
+      "-" -> "sub\n"
+      "/" -> "div\n"
       "*" -> "call Math.multiply 2\n"
-      "<" -> "lt"
-      ">" -> "gt"
-      "=" -> "eq"
+      "<" -> "lt\n"
+      ">" -> "gt\n"
+      "=" -> "eq\n"
     end
   end
 
@@ -257,7 +280,9 @@ defmodule Compiler do
     varName = letStatement["varName"]
     expression = letStatement["expression"]
 
+    IO.puts("Vars:")
     IO.inspect(vars)
+    IO.puts("--------------------------------")
 
     build_expression(expression, vars) <>
       "pop " <> get_var_scope_index(varName, vars, :local) <> "\n"
@@ -300,7 +325,7 @@ defmodule Compiler do
 
             case subitem do
               nil ->
-                get_var_scope_index(varName, vars, :local, 1 + listIndex, 0, 1 + overallIndex)
+                get_var_scope_index(varName, vars, :local, 1 + listIndex, 0, overallIndex)
 
               _ ->
                 case subitem == varName do
@@ -357,7 +382,7 @@ defmodule Compiler do
 
             case subitem do
               nil ->
-                get_var_scope_index(varName, vars, :static, 1 + listIndex, 0, 1 + overallIndex)
+                get_var_scope_index(varName, vars, :static, 1 + listIndex, 0, overallIndex)
 
               _ ->
                 case subitem == varName do

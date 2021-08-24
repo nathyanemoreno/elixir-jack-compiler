@@ -3,7 +3,7 @@ defmodule VMExpressionListNDFA do
         stream,
         index,
         mModel \\ %{
-          "expressions" => nil
+          "expressions" => []
         },
         tokenState \\ 0
       ) do

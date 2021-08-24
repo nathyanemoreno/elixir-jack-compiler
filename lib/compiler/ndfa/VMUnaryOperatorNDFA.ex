@@ -1,24 +1,25 @@
 defmodule VMUnaryOperatorNDFA do
-  def checkToken(stream, index, mModel \\ 0, tokenState \\ 0) do
+  def checkToken(stream, index, mModel \\ %{"operator" => nil}, tokenState \\ 0) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
     nextIndex = tokenObj["index"]
 
-
     case tokenState do
       0 ->
-        IO.inspect(
-          "Checking token UnaryOperator")
+        IO.inspect("Checking token UnaryOperator")
+
         cond do
           # * Go to state 100
           tokenType == :symbol ->
             case token do
               "-" ->
-                checkToken(stream, "<symbol> - </symbol>", nextIndex, 100)
+                mModel = Map.replace(mModel, "operator", "-")
+                checkToken(stream, nextIndex, mModel, 100)
 
               "~" ->
-                checkToken(stream, "<symbol> ~ </symbol>", nextIndex, 100)
+                mModel = Map.replace(mModel, "operator", "~")
+                checkToken(stream, nextIndex, mModel, 100)
 
               _ ->
                 IO.puts(">> Exiting UnaryOperatorNDFA (FAILED)")

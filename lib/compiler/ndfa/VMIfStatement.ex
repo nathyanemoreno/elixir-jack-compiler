@@ -4,7 +4,8 @@ defmodule VMIfStatementNDFA do
         index,
         mModel \\ %{
           "expression" => nil,
-          "statements" => nil
+          "statements" => nil,
+          "elseStatements" => nil,
         },
         tokenState \\ 0
       ) do
@@ -43,6 +44,7 @@ defmodule VMIfStatementNDFA do
 
         cond do
           expression["finished"] ->
+            mModel = Map.replace(mModel, "expression", expression["object"]["expression"])
             checkToken(stream, expression["index"], mModel, 3)
 
           true ->
@@ -80,6 +82,7 @@ defmodule VMIfStatementNDFA do
             %{"finished" => false, "index" => index, "token" => token, "object" => ""}
 
           true ->
+            mModel = Map.replace(mModel, "statements", statements["object"]["statements"])
             checkToken(stream, statements["index"], mModel, 6)
         end
 
@@ -121,6 +124,7 @@ defmodule VMIfStatementNDFA do
             %{"finished" => false, "index" => index, "token" => token, "object" => ""}
 
           true ->
+            mModel = Map.replace(mModel, "elseStatements", statements["object"]["statements"])
             checkToken(stream, statements["index"], mModel, 10)
         end
 

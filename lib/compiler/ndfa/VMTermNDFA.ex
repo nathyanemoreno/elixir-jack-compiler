@@ -15,7 +15,7 @@ defmodule VMTermNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect("Checking token TermNDFA ")
+        IO.puts("Checking token TermNDFA")
 
         cond do
           # * Go to state 1
@@ -71,6 +71,7 @@ defmodule VMTermNDFA do
 
               true ->
                 subroutineCall = VMSubroutineCallNDFA.checkToken(stream, index)
+                IO.inspect(subroutineCall)
 
                 cond do
                   subroutineCall["finished"] ->
@@ -107,14 +108,14 @@ defmodule VMTermNDFA do
                         checkToken(stream, varName["index"], mModel, 10)
 
                       true ->
-                        unaryOperator = UnaryOperatorNDFA.checkToken(stream, index)
+                        unaryOperator = VMUnaryOperatorNDFA.checkToken(stream, index)
 
                         cond do
                           unaryOperator["finished"] ->
                             checkToken(
                               stream,
-                              unaryOperator["object"],
                               unaryOperator["index"],
+                              unaryOperator["object"],
                               20
                             )
 
