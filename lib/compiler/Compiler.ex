@@ -1,27 +1,38 @@
 defmodule Compiler do
-  def start(fileIn) do
-    {:ok, message} = Syntaxer.start(fileIn)
+  def start(path) do
+    files = get_files(path)
 
-    if(message == :compile) do
-      stream = File.read!(fileIn)
-      tokenObj = Compiler.build(stream)
-    end
+    stream_out = Compiler.build(files)
+    File.write!("data/vm/VMFile.vm", stream_out)
+    IO.inspect(stream_out)
   end
 
   def start(fileIn, fileOut) do
     {:ok, message} = Syntaxer.start(fileIn)
   end
 
-  def build(stream) do
-    {:ok, fileClassObject} = VMClassDefNDFA.checkToken(stream)
-    IO.inspect(fileClassObject)
-
-    fileContent = build_class(fileClassObject)
-    IO.puts(fileContent)
-    fileContent
+  def get_files(path) do
+    {:ok, files} = File.ls(path)
+    files = Path.wildcard(path <> "*.jack")
+    if(Enum.empty?(files), do: CompilerMessages.error("No .jack files in #{path}"), else: files)
   end
 
-  @spec build_class(nil | maybe_improper_list | map) :: binary
+  def build(files, fileContent \\ "") do
+    if(!Enum.empty?(files)) do
+      [file | tail] = files
+      stream = File.read!(file)
+      {:ok, fileClassObject} = VMClassDefNDFA.checkToken(stream)
+      IO.inspect(fileClassObject)
+
+      fileOut = build_class(fileClassObject)
+      # IO.puts(fileContent)
+      build(tail, fileContent <> fileOut <> "\n")
+    else
+      fileContent
+    end
+
+  end
+
   def build_class(classObject) do
     vars = get_vars()
     vars = Map.replace(vars, "fields", classObject["fields"])
