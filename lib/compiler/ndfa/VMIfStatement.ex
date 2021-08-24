@@ -1,5 +1,13 @@
 defmodule VMIfStatementNDFA do
-  def checkToken(stream, index, mModel \\ 0, tokenState \\ 0) do
+  def checkToken(
+        stream,
+        index,
+        mModel \\ %{
+          "expression" => nil,
+          "statements" => nil
+        },
+        tokenState \\ 0
+      ) do
     tokenObj = Lexer.lexer(stream, index)
     token = tokenObj["token"]
     tokenType = tokenObj["type"]
@@ -12,7 +20,7 @@ defmodule VMIfStatementNDFA do
         cond do
           # * Go to state 1
           tokenType == :keyword and token == "if" ->
-            checkToken(stream, "<keyword> if </keyword>", nextIndex, 1)
+            checkToken(stream, nextIndex, mModel, 1)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -35,7 +43,7 @@ defmodule VMIfStatementNDFA do
 
         cond do
           expression["finished"] ->
-            checkToken(stream, mModel <> "\n" <> expression["object"], expression["index"], 3)
+            checkToken(stream, expression["index"], mModel, 3)
 
           true ->
             IO.puts(">> Exiting IfStatementNDFA (FAILED)")
@@ -72,7 +80,7 @@ defmodule VMIfStatementNDFA do
             %{"finished" => false, "index" => index, "token" => token, "object" => ""}
 
           true ->
-            checkToken(stream, mModel <> "\n" <> statements["object"], statements["index"], 6)
+            checkToken(stream, statements["index"], mModel, 6)
         end
 
       6 ->
@@ -88,7 +96,7 @@ defmodule VMIfStatementNDFA do
       7 ->
         cond do
           tokenType == :keyword and token == "else" ->
-            checkToken(stream, mModel <> "\n<keyword> else </keyword>", nextIndex, 8)
+            checkToken(stream, nextIndex, mModel, 8)
 
           true ->
             checkToken(stream, index, mModel, 100)
@@ -113,7 +121,7 @@ defmodule VMIfStatementNDFA do
             %{"finished" => false, "index" => index, "token" => token, "object" => ""}
 
           true ->
-            checkToken(stream, mModel <> "\n" <> statements["object"], statements["index"], 10)
+            checkToken(stream, statements["index"], mModel, 10)
         end
 
       10 ->
@@ -133,7 +141,7 @@ defmodule VMIfStatementNDFA do
           "finished" => true,
           "index" => index,
           "token" => token,
-          "object" => "<ifStatement>\n" <> mModel <> "\n</ifStatement>"
+          "object" => mModel
         }
     end
   end

@@ -21,7 +21,7 @@ defmodule Compiler do
     if(!Enum.empty?(files)) do
       [file | tail] = files
       stream = File.read!(file)
-      {:ok, fileClassObject} = VMClassDefNDFA.checkToken(stream)
+      {message, fileClassObject} = VMClassDefNDFA.checkToken(stream)
       IO.inspect(fileClassObject)
 
       fileOut = build_class(fileClassObject)
@@ -30,7 +30,6 @@ defmodule Compiler do
     else
       fileContent
     end
-
   end
 
   def build_class(classObject) do
@@ -67,31 +66,39 @@ defmodule Compiler do
           " " <>
           Integer.to_string(Enum.count(item["parameters"])) <>
           "\n" <>
-          build_statments(item["statments"], fvars) <>
+          build_statements(item["statements"], fvars) <>
           build_subroutines_functions(className, functions, vars, 1 + index)
     end
   end
 
-  def build_statments(statments, vars, index \\ 0) do
-    statment = Enum.at(statments, index)
+  def build_statements(statements, vars, index \\ 0) do
+    statement = Enum.at(statements, index)
 
-    case statment do
+    case statement do
       nil ->
         ""
 
       _ ->
-        case statment["kind"] do
+        case statement["kind"] do
           "do" ->
-            build_do(statment["statment"], vars) <>
-              build_statments(statments, vars, 1 + index)
+            build_do(statement["statement"], vars) <>
+              build_statements(statements, vars, 1 + index)
 
           "let" ->
-            build_let(statment["statment"], vars) <>
-              build_statments(statments, vars, 1 + index)
+            build_let(statement["statement"], vars) <>
+              build_statements(statements, vars, 1 + index)
+
+          "while" ->
+            build_while(statement["statement"], vars, index) <>
+              build_statements(statements, vars, 1 + index)
+
+          "if" ->
+            build_if(statement["statement"], vars, index) <>
+              build_statements(statements, vars, 1 + index)
 
           "return" ->
-            build_return(statment["statment"], vars) <>
-              build_statments(statments, vars, 1 + index)
+            build_return(statement["statement"], vars) <>
+              build_statements(statements, vars, 1 + index)
 
           _ ->
             nil
@@ -99,8 +106,8 @@ defmodule Compiler do
     end
   end
 
-  def build_do(doStatment, vars) do
-    subroutineCall = doStatment["subroutineCall"]
+  def build_do(doStatement, vars) do
+    subroutineCall = doStatement["subroutineCall"]
 
     build_subroutineCall(subroutineCall, vars)
   end
@@ -139,6 +146,48 @@ defmodule Compiler do
     end
   end
 
+  def build_while(whileStatement, vars, index \\ 0) do
+    statement = whileStatement["expression"]
+    statements = whileStatement["statements"]
+
+    case statement do
+      nil ->
+        "return\n"
+
+      _ ->
+        "label WHILE_EXP#{index}\n" <>
+          build_expression(statement, vars) <>
+          "\n" <>
+          "if-goto WHILE_END#{index}\n" <>
+          build_statements(statements, vars, index) <>
+          "goto WHILE_EXP#{index}\n" <>
+          "label WHILE_END#{index}\n"
+    end
+  end
+
+  def build_if(ifStatement, vars, index \\ 0) do
+    statement = ifStatement["expression"]
+    statements = ifStatement["statements"]
+    CompilerMessages.alert("YAHARO")
+    IO.inspect(statements)
+
+    case statement do
+      nil ->
+        "return\n"
+
+      _ ->
+        build_expression(statement, vars) <>
+        "if-goto IF_TRUE\n" <>
+        "goto IF_FALSE" <>
+        "label IF_TRUE"<>
+        build_statements(statements, vars, index) <>
+        "goto IF_END#{index}\n" <>
+        "label IF_FALSE\n" <>
+        build_statements(statements, vars, index)
+        "label IF_END#{index}\n"
+    end
+  end
+
   def build_expression_term(term, vars) do
     case term["kind"] do
       :expression ->
@@ -152,6 +201,9 @@ defmodule Compiler do
 
       :subroutineCall ->
         build_subroutineCall(term["term"], vars)
+
+      :keywordConstant ->
+        "push constant" <> "0" <> "\n"
     end
   end
 
@@ -166,6 +218,9 @@ defmodule Compiler do
     case op["operator"] do
       "+" -> "add\n"
       "*" -> "call Math.multiply 2\n"
+      "<" -> "lt"
+      ">" -> "gt"
+      "=" -> "eq"
     end
   end
 
@@ -198,16 +253,18 @@ defmodule Compiler do
     end
   end
 
-  def build_let(letStatment, vars) do
-    varName = letStatment["varName"]
-    expression = letStatment["expression"]
+  def build_let(letStatement, vars) do
+    varName = letStatement["varName"]
+    expression = letStatement["expression"]
+
+    IO.inspect(vars)
 
     build_expression(expression, vars) <>
       "pop " <> get_var_scope_index(varName, vars, :local) <> "\n"
   end
 
-  def build_return(returnStatment, vars) do
-    expression = returnStatment["expression"]
+  def build_return(returnStatement, vars) do
+    expression = returnStatement["expression"]
 
     case expression do
       nil ->

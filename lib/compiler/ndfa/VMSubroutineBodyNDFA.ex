@@ -4,7 +4,7 @@ defmodule VMSubroutineBodyNDFA do
         index,
         mModel \\ %{
           "varDecs" => [],
-          "statments" => []
+          "statements" => []
         },
         state \\ 0
       ) do
@@ -47,8 +47,8 @@ defmodule VMSubroutineBodyNDFA do
             mModel =
               Map.replace(
                 mModel,
-                "statments",
-                mModel["statments"] ++ statementsNDFA["object"]["statments"]
+                "statements",
+                mModel["statements"] ++ statementsNDFA["object"]["statements"]
               )
 
             checkToken(

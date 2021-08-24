@@ -3,7 +3,7 @@ defmodule VMStatementsNDFA do
         stream,
         index,
         mModel \\ %{
-          "statments" => []
+          "statements" => []
         },
         tokenState \\ 0
       ) do
@@ -21,7 +21,7 @@ defmodule VMStatementsNDFA do
         cond do
           statement["finished"] ->
             mModel =
-              Map.replace(mModel, "statments", mModel["statments"] ++ [statement["object"]])
+              Map.replace(mModel, "statements", mModel["statements"] ++ [statement["object"]])
 
             checkToken(stream, statement["index"], mModel, 0)
 

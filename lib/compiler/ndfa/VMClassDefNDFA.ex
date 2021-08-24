@@ -162,7 +162,7 @@ defmodule VMClassDefNDFA do
                 end
 
               false ->
-                IO.puts(mModel)
+                IO.inspect(mModel)
                 {:error, "Syntax error"}
             end
         end

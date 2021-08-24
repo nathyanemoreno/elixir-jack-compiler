@@ -4,7 +4,7 @@ defmodule VMStatementNDFA do
         index,
         mModel \\ %{
           "kind" => nil,
-          "statment" => nil
+          "statement" => nil
         },
         tokenState \\ 0
       ) do
@@ -23,7 +23,7 @@ defmodule VMStatementNDFA do
             mModel =
               Map.replace(
                 Map.replace(mModel, "kind", "let"),
-                "statment",
+                "statement",
                 letStatement["object"]
               )
 
@@ -37,7 +37,7 @@ defmodule VMStatementNDFA do
                 mModel =
                   Map.replace(
                     Map.replace(mModel, "kind", "if"),
-                    "statment",
+                    "statement",
                     ifStatement["object"]
                   )
 
@@ -51,25 +51,25 @@ defmodule VMStatementNDFA do
                     mModel =
                       Map.replace(
                         Map.replace(mModel, "kind", "while"),
-                        "statment",
+                        "statement",
                         whileStatement["object"]
                       )
 
                     checkToken(stream, whileStatement["index"], mModel, 100)
 
                   true ->
-                    doStatment = VMDoStatementNDFA.checkToken(stream, index)
+                    doStatement = VMDoStatementNDFA.checkToken(stream, index)
 
                     cond do
-                      doStatment["finished"] ->
+                      doStatement["finished"] ->
                         mModel =
                           Map.replace(
                             Map.replace(mModel, "kind", "do"),
-                            "statment",
-                            doStatment["object"]
+                            "statement",
+                            doStatement["object"]
                           )
 
-                        checkToken(stream, doStatment["index"], mModel, 100)
+                        checkToken(stream, doStatement["index"], mModel, 100)
 
                       true ->
                         returnStatement = VMReturnStatementNDFA.checkToken(stream, index)
@@ -79,7 +79,7 @@ defmodule VMStatementNDFA do
                             mModel =
                               Map.replace(
                                 Map.replace(mModel, "kind", "return"),
-                                "statment",
+                                "statement",
                                 returnStatement["object"]
                               )
 

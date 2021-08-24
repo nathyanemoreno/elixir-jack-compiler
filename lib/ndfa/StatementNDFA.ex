@@ -23,9 +23,9 @@ defmodule StatementNDFA do
                 cond do
                   whileStatement["finished"] -> checkToken(stream,whileStatement["index"], 100)
                   true ->
-                    doStatment = DoStatementNDFA.checkToken(stream, index)
+                    doStatement = DoStatementNDFA.checkToken(stream, index)
                     cond do
-                      doStatment["finished"] -> checkToken(stream,doStatment["index"], 100)
+                      doStatement["finished"] -> checkToken(stream,doStatement["index"], 100)
                       true ->
                         returnStatement = ReturnStatementNDFA.checkToken(stream, index)
                         cond do

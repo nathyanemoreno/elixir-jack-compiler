@@ -15,7 +15,7 @@ defmodule VMTermNDFA do
 
     case tokenState do
       0 ->
-        IO.inspect("Checking token TermNDFA")
+        IO.inspect("Checking token TermNDFA ")
 
         cond do
           # * Go to state 1
@@ -169,7 +169,7 @@ defmodule VMTermNDFA do
       10 ->
         cond do
           tokenType == :symbol and token == "[" ->
-            checkToken(stream, mModel <> "<symbol> [ </symbol>", nextIndex, 11)
+            checkToken(stream, nextIndex, mModel, 11)
 
           true ->
             checkToken(stream, index, mModel, 100)
@@ -180,7 +180,7 @@ defmodule VMTermNDFA do
 
         cond do
           expression["finished"] ->
-            checkToken(stream, mModel <> "\n" <> expression["object"], expression["index"], 12)
+            checkToken(stream, expression["index"], mModel, 12)
 
           true ->
             IO.puts(">> Exiting TermNDFA (FAILED)")
@@ -190,7 +190,7 @@ defmodule VMTermNDFA do
       12 ->
         cond do
           tokenType == :symbol and token == "]" ->
-            checkToken(stream, mModel <> "<symbol> ] </symbol>", nextIndex, 100)
+            checkToken(stream, nextIndex, mModel, 100)
 
           true ->
             IO.puts(">> Exiting TermNDFA (FAILED)")
@@ -202,7 +202,7 @@ defmodule VMTermNDFA do
 
         cond do
           term["finished"] ->
-            checkToken(stream, mModel <> "\n" <> term["object"], term["index"], 100)
+            checkToken(stream, term["index"], mModel, 100)
 
           true ->
             IO.puts(">> Exiting TermNDFA (FAILED)")

@@ -22,9 +22,6 @@ defmodule ElixirJackCompiler.CLI do
       {[help: true], _, _} ->
         :help
 
-      {[i: fileIn, o: fileOut], _, _} ->
-        {:start, fileIn, fileOut}
-
       {[i: fileIn], _, _} ->
         {:start, fileIn}
 
@@ -33,13 +30,10 @@ defmodule ElixirJackCompiler.CLI do
     end
   end
 
-  defp run({:start, fileIn, fileOut}) do
-    Compiler.start(fileIn, fileOut)
+  defp run({:start, path}) do
+    Compiler.start(path)
   end
 
-  defp run({:start, fileIn}) do
-    Compiler.start(fileIn)
-  end
 
   defp run(:help) do
     IO.puts(@moduledoc)

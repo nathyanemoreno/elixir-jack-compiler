@@ -7,7 +7,7 @@ defmodule VMSubroutineDecNDFA do
           "returnType" => nil,
           "subroutineName" => nil,
           "varDecs" => [],
-          "statments" => [],
+          "statements" => [],
           "parameters" => []
         },
         state \\ 0
@@ -109,7 +109,7 @@ defmodule VMSubroutineDecNDFA do
 
         cond do
           subroutineBody["finished"] ->
-            mModel = Map.replace(mModel, "statments", subroutineBody["object"]["statments"])
+            mModel = Map.replace(mModel, "statements", subroutineBody["object"]["statements"])
             mModel = Map.replace(mModel, "varDecs", subroutineBody["object"]["varDecs"])
 
             checkToken(
