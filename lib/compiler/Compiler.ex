@@ -41,7 +41,13 @@ defmodule Compiler do
 
     vmContent =
       vmContent <>
-        build_subroutines_functions(classObject["className"], classObject["functions"], vars)
+        build_subroutines_functions(classObject["className"], classObject["functions"], vars) <>
+        build_subroutines_methods(classObject["className"], classObject["methods"], vars) <>
+        build_subroutines_constructors(
+          classObject["className"],
+          classObject["constructors"],
+          vars
+        )
 
     # vmContent = vmContent <> build_subroutines_methods(classObject["methods"], vars)
     # vmContent = vmContent <> build_subroutines_constructors(classObject["constructors"], vars)
@@ -59,9 +65,11 @@ defmodule Compiler do
         local = Enum.at(localGroup["varNames"], index2)
 
         case local do
-          nil -> count_locals(locals, 1 + index1)
+          nil ->
+            count_locals(locals, 1 + index1)
+
           _ ->
-            IO.inspect(local);
+            IO.inspect(local)
             1 + count_locals(locals, index1, 1 + index2)
         end
     end
@@ -87,6 +95,52 @@ defmodule Compiler do
           "\n" <>
           build_statements(item["statements"], fvars) <>
           build_subroutines_functions(className, functions, vars, 1 + index)
+    end
+  end
+
+  def build_subroutines_methods(className, methods, vars, index \\ 0) do
+    item = Enum.at(methods, index)
+
+    case item do
+      nil ->
+        ""
+
+      _ ->
+        fvars = Map.replace(vars, "locals", item["varDecs"])
+        fvars = Map.replace(fvars, "arguments", item["parameters"])
+
+        "function " <>
+          className <>
+          "." <>
+          item["subroutineName"] <>
+          " " <>
+          Integer.to_string(count_locals(item["varDecs"])) <>
+          "\npush argument 0\npop pointer 0\n" <>
+          build_statements(item["statements"], fvars) <>
+          build_subroutines_methods(className, methods, vars, 1 + index)
+    end
+  end
+
+  def build_subroutines_constructors(className, constructors, vars, index \\ 0) do
+    item = Enum.at(constructors, index)
+
+    case item do
+      nil ->
+        ""
+
+      _ ->
+        fvars = Map.replace(vars, "locals", item["varDecs"])
+        fvars = Map.replace(fvars, "arguments", item["parameters"])
+
+        "function " <>
+          className <>
+          "." <>
+          item["subroutineName"] <>
+          " " <>
+          Integer.to_string(count_locals(item["varDecs"])) <>
+          "\n" <>
+          build_statements(item["statements"], fvars) <>
+          build_subroutines_constructors(className, constructors, vars, 1 + index)
     end
   end
 
@@ -131,7 +185,7 @@ defmodule Compiler do
   def build_do(doStatement, vars) do
     subroutineCall = doStatement["subroutineCall"]
 
-    build_subroutineCall(subroutineCall, vars)
+    build_subroutineCall(subroutineCall, vars, true) <> "pop temp 0\n"
   end
 
   def build_expressionList(expressions, vars, index \\ 0) do
@@ -200,12 +254,21 @@ defmodule Compiler do
         ""
 
       _ ->
-        build_expression(expression, vars) <>
-          "if-goto IF_TRUE#{index}\ngoto IF_FALSE#{index}\nlabel IF_TRUE#{index}\n" <>
-          build_statements(statements, vars) <>
-          "goto IF_END#{index}\nlabel IF_FALSE#{index}\n" <>
-          build_statements(elseStatements, vars) <>
-          "label IF_END#{index}\n"
+        case elseStatements do
+          nil ->
+            build_expression(expression, vars) <>
+              "if-goto IF_TRUE#{index}\ngoto IF_END#{index}\nlabel IF_TRUE#{index}\n" <>
+              build_statements(statements, vars) <>
+              "goto IF_END#{index}\nlabel IF_END#{index}\n"
+
+          _ ->
+            build_expression(expression, vars) <>
+              "if-goto IF_TRUE#{index}\ngoto IF_FALSE#{index}\nlabel IF_TRUE#{index}\n" <>
+              build_statements(statements, vars) <>
+              "goto IF_END#{index}\nlabel IF_FALSE#{index}\n" <>
+              build_statements(elseStatements, vars) <>
+              "label IF_END#{index}\n"
+        end
     end
   end
 
@@ -224,15 +287,36 @@ defmodule Compiler do
         build_subroutineCall(term["term"], vars)
 
       :keywordConstant ->
-        "push constant" <> "0" <> "\n"
+        "push constant " <> "0" <> "\n"
+
+      :unaryTerm ->
+        build_unary_term(term["term"], vars)
     end
   end
 
-  def build_subroutineCall(subroutineCall, vars) do
-    build_expressionList(subroutineCall["expressionList"], vars) <>
-      "call " <>
-      subroutineCall["completeName"] <>
-      " " <> Integer.to_string(1 + Enum.count(subroutineCall["expressionList"])) <> "\n"
+  def build_unary_term(unary_term, vars) do
+    unaryOp = Enum.at(unary_term, 0)
+
+    case unaryOp["operator"] do
+      "~" -> build_expression_term(Enum.at(unary_term, 1), vars) <> "not\n"
+      "-" -> build_expression_term(Enum.at(unary_term, 1), vars) <> "neg\n"
+    end
+  end
+
+  def build_subroutineCall(subroutineCall, vars, isDoStatment \\ false) do
+    case isDoStatment do
+      true ->
+        build_expressionList(subroutineCall["expressionList"], vars) <>
+          "call " <>
+          subroutineCall["completeName"] <>
+          " " <> Integer.to_string(Enum.count(subroutineCall["expressionList"])) <> "\n"
+
+      false ->
+        build_expressionList(subroutineCall["expressionList"], vars) <>
+          "call " <>
+          subroutineCall["completeName"] <>
+          " " <> Integer.to_string(1 + Enum.count(subroutineCall["expressionList"])) <> "\n"
+    end
   end
 
   def build_expression_op(op) do
@@ -284,8 +368,16 @@ defmodule Compiler do
     IO.inspect(vars)
     IO.puts("--------------------------------")
 
-    build_expression(expression, vars) <>
-      "pop " <> get_var_scope_index(varName, vars, :local) <> "\n"
+    var = get_var_scope_index(varName, vars, :local)
+
+    case var do
+      nil ->
+        CompilerMessages.error("Variable #{varName} does not exists")
+
+      _ ->
+        build_expression(expression, vars) <>
+          "pop " <> var <> "\n"
+    end
   end
 
   def build_return(returnStatement, vars) do
@@ -293,7 +385,7 @@ defmodule Compiler do
 
     case expression do
       nil ->
-        "return\n"
+        "push constant 0\nreturn\n"
 
       _ ->
         build_expression(expression, vars) <> "return\n"
@@ -363,11 +455,36 @@ defmodule Compiler do
         end
 
       :field ->
+        IO.inspect(vars)
         item = Enum.at(vars["fields"], listIndex)
 
         case item do
-          nil -> get_var_scope_index(varName, vars, :static)
-          _ -> get_var_scope_index(varName, vars, :field, 1 + listIndex)
+          nil ->
+            get_var_scope_index(varName, vars, :static)
+
+          _ ->
+            subitem = Enum.at(item["varNames"], subitemIndex)
+
+            case subitem do
+              nil ->
+                get_var_scope_index(varName, vars, :field, 1 + listIndex, 0, overallIndex)
+
+              _ ->
+                case subitem == varName do
+                  true ->
+                    "field " <> Integer.to_string(overallIndex)
+
+                  false ->
+                    get_var_scope_index(
+                      varName,
+                      vars,
+                      :field,
+                      listIndex,
+                      1 + subitemIndex,
+                      1 + overallIndex
+                    )
+                end
+            end
         end
 
       :static ->

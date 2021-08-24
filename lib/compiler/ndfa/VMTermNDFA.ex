@@ -112,10 +112,13 @@ defmodule VMTermNDFA do
 
                         cond do
                           unaryOperator["finished"] ->
+                            mModel = Map.replace(mModel, "kind", :unaryTerm)
+                            mModel = Map.replace(mModel, "term", [unaryOperator["object"]])
+
                             checkToken(
                               stream,
                               unaryOperator["index"],
-                              unaryOperator["object"],
+                              mModel,
                               20
                             )
 
@@ -203,6 +206,7 @@ defmodule VMTermNDFA do
 
         cond do
           term["finished"] ->
+            mModel = Map.replace(mModel, "term", mModel["term"] ++ [term["object"]])
             checkToken(stream, term["index"], mModel, 100)
 
           true ->
