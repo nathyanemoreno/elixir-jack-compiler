@@ -6,13 +6,7 @@ defmodule Compiler do
     File.write!("data/vm/VMFile.vm", stream_out)
     IO.inspect(stream_out)
   end
-
-  def start(fileIn, fileOut) do
-    {:ok, message} = Syntaxer.start(fileIn)
-  end
-
   def get_files(path) do
-    {:ok, files} = File.ls(path)
     files = Path.wildcard(path <> "*.jack")
     if(Enum.empty?(files), do: CompilerMessages.error("No .jack files in #{path}"), else: files)
   end
@@ -22,6 +16,7 @@ defmodule Compiler do
       [file | tail] = files
       stream = File.read!(file)
       {message, fileClassObject} = VMClassDefNDFA.checkToken(stream)
+      if(message == :error, do: IO.puts("Fail compiling the files"))
       IO.inspect(fileClassObject)
 
       fileOut = build_class(fileClassObject)
@@ -328,6 +323,8 @@ defmodule Compiler do
       "<" -> "lt\n"
       ">" -> "gt\n"
       "=" -> "eq\n"
+      "&" -> "and\n"
+      "|" -> "or\n"
     end
   end
 
